@@ -14,9 +14,4 @@ class UserService{
     {
         return $this->userDao->add_user($user);
     }
-
-    public function get_user_by_id($user_id) 
-    {
-        return $this->userDao->get_user_by_id($user_id);
-    }
 }

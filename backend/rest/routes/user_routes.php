@@ -2,6 +2,9 @@
 
 require_once __DIR__ . '/../services/UserService.php';
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+
 Flight::set('user_service', new UserService());
 
 Flight::group('/users', function() {
@@ -31,16 +34,6 @@ Flight::group('/users', function() {
         Flight::json(
             $user
         );
-    });
-
-    Flight::route('GET /user', function () {
-        $body = Flight::request()->query;
-
-        // $body['id']
-
-        $user_service = new UserService();
-        $user = $user_service->get_user_by_id(11);
-        Flight::json($user, 200);
     });
 
 });
