@@ -20,7 +20,7 @@ class Config {
         return Config::get_env("DB_HOST", '127.0.0.1');
     }
     public static function JWT_SECRET(){
-        return Config::get_env("JWT_SECRET", 'hgY=&*54#T+kTe,8zT=7L-3z4tV/&9');
+        return Config::get_env("JWT_SECRET", ',dpPL,Se%fM-UVQBwf/X0T&B!DF6%}');
     }
     public static function get_env($name, $default){
         return isset($_ENV[$name]) && trim($_ENV[$name]) != "" ? $_ENV[$name] : $default;

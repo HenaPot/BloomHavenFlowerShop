@@ -1,5 +1,5 @@
-display_user_profile = function (user_id) {
-    RestClient.get("users/" + user_id, function (user) {
+display_user_profile = function () {
+    RestClient.get("users/current", function (user) {
       const userContainer = document.getElementById("profile-page");
       userContainer.innerHTML = `
       <div

@@ -36,4 +36,24 @@ Flight::group('/users', function() {
         );
     });
 
+    Flight::route('GET /current', function() {
+        $current_user_id = Flight::get('user');
+    
+        // Debugging: Print Retrieved User ID
+        error_log("Current User ID: " . $current_user_id);
+    
+        if (!$current_user_id) {
+            Flight::json(["error" => "User ID not found"], 400);
+            return;
+        }
+    
+        $user = Flight::get('user_service')->get_user_by_id($current_user_id);
+    
+        // Debugging: Check if get_user_by_id() returns valid data
+        error_log("User Data: " . print_r($user, true));
+    
+        Flight::json($user);
+    });
+    
+
 });

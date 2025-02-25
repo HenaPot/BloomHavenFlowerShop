@@ -72,3 +72,13 @@
       </div>
     </div>
   </section>
+
+  <script>
+    RestClient.get("users/current", function(response) {
+    console.log("User Data:", response); // Success callback
+  }, function(error) {
+    console.error("Error fetching user data:", error); // Error callback
+});
+
+
+</script>
