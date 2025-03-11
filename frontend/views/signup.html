@@ -119,6 +119,10 @@
         "users/add",
         data,
         function (response) {
+          window.localStorage.setItem("token", response.token);
+          window.localStorage.setItem("user_id", response.id);
+          window.localStorage.setItem("user", response.username);
+          
           toastr.success("You have successfully added the user.");
           window.location.href = '#profile';
         },

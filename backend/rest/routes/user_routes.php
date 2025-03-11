@@ -31,8 +31,21 @@ Flight::group('/users', function() {
 
         $user = Flight::get('user_service')->add_user($data);
 
+        $jwt_payload = [
+            'user' => $user,
+            'iat' => time(),
+            // If this parameter is not set, JWT will be valid for life. This is not a good approach
+            'exp' => time() + (60 * 60) // valid for an hour
+        ];
+
+        $token = JWT::encode(
+            $jwt_payload,
+            Config::JWT_SECRET(),
+            'HS256'
+        );
+
         Flight::json(
-            $user
+            array_merge($user, ['token' => $token])
         );
     });
 
