@@ -31,13 +31,41 @@ display_user_profile = function () {
     });
   };
 
-  // app.route({
-  //   view: "login",
-  //   load: "login.html",
-  //   onCreate: function () {},
-  //   onReady: function () {},
-  // });
-  
-  // loginForm = function () {
+$(document).ready(function () {
+    function toggleHeaderFooter() {
+        const hash = window.location.hash; // Get the current URL hash
+        if (hash === "#login" || hash === "#signup") {
+            $("header, footer").hide();
+        } else {
+            $("header, footer").show();
+        }
+    }
 
-  // };
+    // Run on page load
+    toggleHeaderFooter();
+
+    // Run when navigation occurs
+    $(window).on("hashchange", function () {
+        toggleHeaderFooter();
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const navLinks = document.querySelectorAll(".nav-link");
+
+  function updateActiveLink() {
+      const currentPage = window.location.hash || "#dashboard"; // Default to dashboard
+      navLinks.forEach(link => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === currentPage) {
+              link.classList.add("active");
+          }
+      });
+  }
+
+  // Update active link when page loads
+  updateActiveLink();
+
+  // Listen for hash changes (SPA navigation)
+  window.addEventListener("hashchange", updateActiveLink);
+});

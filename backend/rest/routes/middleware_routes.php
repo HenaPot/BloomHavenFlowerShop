@@ -15,14 +15,13 @@ Flight::route('/*', function() {
         try {
             $token = Flight::request()->getHeader("Authentication");
             if(!$token)
-                Flight::halt(401, "Missing authentication header");
+                Flight::halt(401, "Unauthorized access. This will be reported to administrator!");
 
             $decoded_token = JWT::decode($token, new Key(Config::JWT_SECRET(), 'HS256'));
-            
-            Flight::set('user', 999);
+            Flight::set('user', $decoded_token->user);
             Flight::set('jwt_token', $token);
             return TRUE;
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Flight::halt(401, $e->getMessage());
         }
     }
