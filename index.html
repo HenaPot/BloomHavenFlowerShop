@@ -26,6 +26,10 @@
     <script src="frontend/assets/js/jquery.spapp.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
 
+    <!-- Datatable -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+
     <!-- Form validation -->
     <script src="frontend/js/form-validation.js"></script>
 
@@ -38,69 +42,78 @@
 
 </head>
 
-<body>
+<body> 
 <header>
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-success">
-    <!-- Container wrapper -->
-    <div class="container">
+  <!-- Container wrapper -->
+  <div class="container">
       <!-- Navbar brand -->
-      <a class="navbar-brand" href="#"><i class="fab fa-linkedin fa-2x"></i></a>
-      <!-- Search form -->
-      <form class="input-group" style="width: 400px">
-        <input type="search" class="form-control" placeholder="Type query" aria-label="Search" />
-        <button class="btn btn-outline-dark" type="button" data-mdb-ripple-init data-mdb-ripple-color="dark" style="padding: .45rem 1.5rem .35rem;">
-          Search
-        </button>
-      </form>
-  
-      <!-- Toggle button -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
-      <!-- Collapsible wrapper -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <a href="#landing">
+          <img class="navbar-brand" src="./frontend/assets/images/flower2.svg" alt="Brand Logo">
+      </a>
 
-      <!-- Left links -->
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link d-flex flex-column text-center" aria-current="page" href="#products">
-            <i class="fa-solid fa-shop"></i>
-              <span class="small">Shop Now</span>
-          </a>
-          </li>
-        <li class="nav-item">
-        <a class="nav-link d-flex flex-column text-center" aria-current="page" href="#">
-            <i class="fas fa-th-large fa-lg my-2"></i>
-            <span class="small">Dashboard</span>
-        </a>
-        </li>
-        <li class="nav-item">
-        <a class="nav-link d-flex flex-column text-center active" aria-current="page" href="#profile">
-            <i class="fas fa-user fa-lg my-2"></i>
-            <span class="small">Profile</span>
-        </a>
-        </li>
-        <li class="nav-item">
-        <a class="nav-link d-flex flex-column text-center" aria-current="page" href="#">
-            <i class="fas fa-heart fa-lg my-2"></i>
-            <span class="small">Wishlist</span>
-        </a>
-        </li>
-        <li class="nav-item">
-        <a class="nav-link d-flex flex-column text-center" aria-current="page" href="#shopping_cart">
-            <i class="fas fa-shopping-cart fa-lg my-2"></i>
-            <span class="small">Shopping Cart</span>
-        </a>
-        </li>
-        </ul>
-      </div>
+      <!-- Search form (Only shown if not on login/signup/landing pages) -->
+      <form class="input-group d-none" id="navbarSearchForm" style="width: 400px;">
+          <input type="search" class="form-control form-control-custom" placeholder="Type query" aria-label="Search">
+          <button class="btn btn-outline-dark" type="button" style="padding: .45rem 1.5rem .35rem;">
+              Search
+          </button>
+      </form>
+
+      <!-- Toggle button -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+          aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+      </button>
+
       <!-- Collapsible wrapper -->
-    </div>
-    <!-- Container wrapper -->
-  </nav>
+      <div class="collapse navbar-collapse" id="navbarContent">
+          <!-- Dynamic Navbar Content -->
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0" id="navbarLinks">
+              <li class="nav-item">
+                  <a class="nav-link d-flex flex-column text-center" href="#products">
+                      <i class="fa-solid fa-shop"></i>
+                      <span class="small">Shop Now</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link d-flex flex-column text-center" href="#dashboard">
+                      <i class="fas fa-th-large fa-lg my-2"></i>
+                      <span class="small">Dashboard</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link d-flex flex-column text-center active" href="#profile">
+                      <i class="fas fa-user fa-lg my-2"></i>
+                      <span class="small">Profile</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link d-flex flex-column text-center" href="#">
+                      <i class="fas fa-heart fa-lg my-2"></i>
+                      <span class="small">Wishlist</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link d-flex flex-column text-center" href="#shopping_cart">
+                      <i class="fas fa-shopping-cart fa-lg my-2"></i>
+                      <span class="small">Shopping Cart</span>
+                  </a>
+              </li>
+              <li class="nav-item mt-2">
+                  <button class="btn btn-outline-dark ms-3" id="logoutBtn">Logout</button>
+              </li>
+          </ul>
+
+          <!-- Login/Signup Buttons (Shown only on login/signup/landing pages) -->
+          <div id="authButtons" class="d-none">
+              <a href="#login" class="btn btn-dark me-2">Login</a>
+              <a href="#signup" class="btn btn-outline-dark">Signup</a>
+          </div>
+      </div>
+  </div>
+</nav>
   <!-- Navbar -->
 </header>
 
@@ -111,6 +124,9 @@
     <section id="shopping_cart" data-load="shopping_cart.html"></section>
     <section id="products" data-load="products.html"></section>
     <section id="flower" data-load="flower.html"></section>
+    <section id="landing" data-load="landing.html"></section>
+    <section id="dashboard" data-load="dashboard.html"></section>
+
 </main>
 
 <!-- Frontend utils and constants -->

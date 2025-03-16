@@ -31,23 +31,28 @@ display_user_profile = function () {
     });
   };
 
-$(document).ready(function () {
-    function toggleHeaderFooter() {
-        const hash = window.location.hash; // Get the current URL hash
-        if (hash === "#login" || hash === "#signup") {
-            $("header, footer").hide();
-        } else {
-            $("header, footer").show();
-        }
-    }
+document.addEventListener("DOMContentLoaded", function () {
+  function updateNavbar() {
+      const hash = window.location.hash;
+      const isAuthPage = hash === "#login" || hash === "#signup" || hash === "#landing";
 
-    // Run on page load
-    toggleHeaderFooter();
+      document.getElementById("navbarLinks").classList.toggle("d-none", isAuthPage);
+      document.getElementById("authButtons").classList.toggle("d-none", !isAuthPage);
+      document.getElementById("navbarSearchForm").classList.toggle("d-none", isAuthPage);
+  }
 
-    // Run when navigation occurs
-    $(window).on("hashchange", function () {
-        toggleHeaderFooter();
-    });
+  // Run on page load
+  updateNavbar();
+
+  // Run when navigation occurs
+  window.addEventListener("hashchange", updateNavbar);
+
+  // Logout functionality
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+      localStorage.clear(); // Clears stored data
+      window.location.hash = "#landing"; // Redirect to landing page
+      updateNavbar(); // Update UI immediately
+  });
 });
 
 document.addEventListener("DOMContentLoaded", function () {
