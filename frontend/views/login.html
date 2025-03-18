@@ -3,11 +3,11 @@
       <div class="row d-flex justify-content-center align-items-center h-100">
   
         <!-- Form Column -->
-        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <div class="col-md-8 col-lg-6 col-xl-4">
           <div class="text-center text-md-center mb-5 mt-4 pt-2">
             <h2>Log In</h2>
           </div>
-          <form class="p-5 form_border" id="login-form">
+          <form class="p-5 mb-5 form_border" id="login-form">
 
             <!-- Email input -->
             <div class="mb-3">
@@ -59,7 +59,7 @@
       Utils.block_ui("#login-form");
 
       RestClient.post(
-        "login",
+        "auth/login",
         data,
         function (response) {
           window.localStorage.setItem("token", response.token);

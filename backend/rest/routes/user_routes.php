@@ -13,6 +13,7 @@ Flight::group('/users', function() {
         $current_user_id = Flight::get('user');
         error_log("Current User ID: " . $current_user_id);     
         $user = Flight::get('user_service')->get_user_by_id($current_user_id);
+        unset($user['password']);
         Flight::json($user);
     });
 
