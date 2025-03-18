@@ -116,7 +116,7 @@
       Utils.block_ui("#signup-form");
 
       RestClient.post(
-        "users/add",
+        "auth/register",
         data,
         function (response) {
           window.localStorage.setItem("token", response.token);

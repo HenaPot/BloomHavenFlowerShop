@@ -7,18 +7,20 @@ use Firebase\JWT\Key;
 
 Flight::route('/*', function() {
     if(
-        strpos(Flight::request()->url, '/login') === 0 ||
-        strpos(Flight::request()->url, '/register') === 0
+        strpos(Flight::request()->url, '/auth/login') === 0 ||
+        strpos(Flight::request()->url, '/auth/register') === 0
     ) {
         return TRUE;
     } else {
         try {
             $token = Flight::request()->getHeader("Authentication");
-            if(!$token)
-                Flight::halt(401, "Unauthorized access. This will be reported to administrator!");
-
+            if(!$token){
+                 Flight::halt(401, "Unauthorized access. This will be reported to administrator!");
+            }
             $decoded_token = JWT::decode($token, new Key(Config::JWT_SECRET(), 'HS256'));
-            Flight::set('user', $decoded_token->user);
+            if(isset($decoded_token->user->id)){
+                Flight::set('user', $decoded_token->user->id);
+            }
             Flight::set('jwt_token', $token);
             return TRUE;
         } catch (\Exception $e) {
