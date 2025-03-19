@@ -363,3 +363,18 @@ em.error {
   }
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.page-link {
+  color: #111111 !important; 
+}
+
+.page-link.active {
+  background-color: #198754 !important;
+}
+
+
+

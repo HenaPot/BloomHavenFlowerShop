@@ -3,8 +3,15 @@ const Utils = {
         var app = $.spapp({
             defaultView: "#landing",
             templateDir: "frontend/views/"
-    
         });
+
+        app.route({
+          view: "profile",
+          onReady: function () {
+              display_user_profile();
+          }
+        });
+
         app.run();
     },
     block_ui: function (element) {

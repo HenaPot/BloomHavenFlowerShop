@@ -1,6 +1,6 @@
 var RestClient = {
   get: function (url, callback, error_callback) {
-    let token = localStorage.getItem("token");    
+    let token = localStorage.getItem("token");
     $.ajax({
       url: Constants.API_BASE_URL + url,
       type: "GET",
@@ -11,7 +11,9 @@ var RestClient = {
         if (callback) callback(response);
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        if (error_callback) error_callback(jqXHR);
+
+          RestClient.handleErrorResponse(jqXHR);
+        
       },
     });
   },
@@ -32,7 +34,7 @@ var RestClient = {
         if (error_callback) {
           error_callback(jqXHR);
         } else {
-          toastr.error(jqXHR.responseJSON.message);
+          RestClient.handleErrorResponse(jqXHR);
         }
       });
   },
@@ -52,4 +54,11 @@ var RestClient = {
     // method used for updating an entity
     RestClient.request(url, "PATCH", data, callback, error_callback);
   },
+  handleErrorResponse: function(jqXHR) {
+    if (jqXHR.status === 401) {
+      window.location.hash = "#unauthorized"; // Navigate to 401.html section
+    } else {
+      toastr.error(jqXHR.responseJSON.message);
+    }
+  }
 };
