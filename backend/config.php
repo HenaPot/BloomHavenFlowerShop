@@ -5,7 +5,7 @@ error_reporting(E_ALL ^ (E_NOTICE | E_DEPRECATED));
 
 class Config {
     public static function DB_NAME(){
-        return Config::get_env("DB_NAME", 'ecommerce');
+        return Config::get_env("DB_NAME", 'bloomhaven');
     }
     public static function DB_PORT(){
         return Config::get_env("DB_PORT", 3306);

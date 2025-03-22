@@ -84,6 +84,18 @@
         <div class="modal-body">
           <form id="edit_profile_form">
             <div class="row">
+              <div class="mb-4">
+                <div class="mb-4 d-flex justify-content-center">
+                    <img id="selectedImage" src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg"
+                    alt="Picture placeholder" style="width: 300px;" />
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div data-mdb-ripple-init class="btn btn-sm btn-success">
+                        <label class="form-label text-white m-1" for="profile_picture">Choose file</label>
+                        <input type="file" class="form-control d-none" id="profile_picture" onchange="displaySelectedImage(event, 'selectedImage')" />
+                    </div>
+                </div>
+            </div>
               <!-- Username input -->
               <div class="mb-3 col-6">
                 <label class="form-label" for="edit_username">Username</label>
