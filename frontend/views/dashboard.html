@@ -1,0 +1,185 @@
+<section id="dashboard" style="background-color: #eee;">
+<div class="container py-5">
+    <!-- Dashboard Header -->
+    <div class="row mb-4">
+    <div class="col-12">
+        <h2 class="fw-bold">My Dashboard</h2>
+    </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card border-success">
+        <div class="card-body text-center">
+            <i class="fas fa-shopping-bag fa-2x text-success mb-3"></i>
+            <h5 class="card-title">Total Orders</h5>
+            <h3 class="card-text text-success">12</h3>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success">
+        <div class="card-body text-center">
+            <i class="fas fa-heart fa-2x text-success mb-3"></i>
+            <h5 class="card-title">Wishlist Items</h5>
+            <h3 class="card-text text-success">5</h3>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success">
+        <div class="card-body text-center">
+            <i class="fas fa-box fa-2x text-success mb-3"></i>
+            <h5 class="card-title">Pending</h5>
+            <h3 class="card-text text-success">2</h3>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success">
+        <div class="card-body text-center">
+            <i class="fas fa-truck fa-2x text-success mb-3"></i>
+            <h5 class="card-title">Delivered</h5>
+            <h3 class="card-text text-success">10</h3>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-success">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Recent Purchases</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+            <table class="table table-hover" id="dashboard_table1">
+                <thead>
+                <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody id="recentOrdersTable">
+                <!-- Orders will be populated dynamically -->
+                <tr>
+                    <!-- <th scope="row">1</th> -->
+                    <td>12</td>
+                    <td>27.01.2025</td>
+                    <td>Rose</td>
+                    <td>2</td>
+                    <td>$75.34</td>
+                    <td>Delivered</td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">2</th> -->
+                    <td>13</td>
+                    <td>06.01.2025</td>
+                    <td>Daisy</td>
+                    <td>1</td>
+                    <td>$75.34</td>
+                    <td>Pending</td>
+                </tr>
+                <tr>
+                    <!-- <th scope="row">3</th> -->
+                    <td>45</td>
+                    <td>17.01.2024</td>
+                    <td>Wildflower Bouquet</td>
+                    <td>2</td>
+                    <td>$75.34</td>
+                    <td>Canceled</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card border-success" style="height: 300px;">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Quick Actions</h5>
+        </div>
+        <div class="card-body d-flex flex-column justify-content-center">
+            <div class="d-grid gap-3">
+            <a href="#shopping_cart" class="btn btn-outline-success">
+                <i class="fas fa-shopping-cart me-2"></i>View Cart
+            </a>
+            <a href="#products" class="btn btn-outline-success">
+                <i class="fas fa-shop me-2"></i>Shop Now
+            </a>
+            <a href="#profile" class="btn btn-outline-success">
+                <i class="fas fa-user me-2"></i>View Profile
+            </a>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card border-success h-100">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Recently Viewed Products</h5>
+        </div>
+        <div class="card-body">
+            <div class="activity-feed">
+            <div class="activity-item d-flex align-items-center mb-3">
+                <img src="./frontend/assets/images/purple_flowers.jfif" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Purple Flowers">
+                <div>
+                <div class="fw-bold">Purple Passion Bouquet</div>
+                <small class="text-muted">Viewed 2 hours ago</small>
+                </div>
+            </div>
+
+            <div class="activity-item d-flex align-items-center mb-3">
+                <img src="./frontend/assets/images/rose_buket.webp" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Rose Bouquet">
+                <div>
+                <div class="fw-bold">Classic Rose Bouquet</div>
+                <small class="text-muted">Viewed 5 hours ago</small>
+                </div>
+            </div>
+
+            <div class="activity-item d-flex align-items-center mb-3">
+                <img src="./frontend/assets/images/kvalitetno_cvijece.webp" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Premium Flowers">
+                <div>
+                <div class="fw-bold">Premium Spring Mix</div>
+                <small class="text-muted">Viewed yesterday</small>
+                </div>
+            </div>
+
+            <div class="activity-item d-flex align-items-center mb-3">
+                <img src="./frontend/assets/images/cvijece.webp" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Seasonal Flowers">
+                <div>
+                <div class="fw-bold">Seasonal Bouquet</div>
+                <small class="text-muted">Viewed 2 days ago</small>
+                </div>
+            </div>
+
+            <div class="activity-item d-flex align-items-center">
+                <img src="./frontend/assets/images/buket.jpg" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Mixed Bouquet">
+                <div>
+                <div class="fw-bold">Mixed Garden Bouquet</div>
+                <small class="text-muted">Viewed 3 days ago</small>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+</section>
+
+<script>
+    new DataTable('#dashboard_table1');
+</script>
