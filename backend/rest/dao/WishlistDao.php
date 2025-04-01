@@ -46,25 +46,63 @@ class WishlistDao extends BaseDao {
         ]);
     }
 
-    public function get_wishlist_by_user($user_id)
+    public function get_wishlist_by_user($user_id, $search = "", $sort_by = "name", $sort_order = "asc")
     {
-        return $this->query(
-            "SELECT 
-                p.id AS product_id,
-                p.name,
-                p.category_id,
-                p.quantity AS product_stock,
-                p.description,
-                w.quantity AS wishlist_quantity
-            FROM wishlist w
-            JOIN product p ON w.product_id = p.id
-            WHERE w.user_id = :user_id",
-            ["user_id" => $user_id]
-        );
+        $allowed_sort_columns = ["name", "price_each"];
+        $allowed_sort_order = ["asc", "desc"];
+    
+        if (!in_array(strtolower($sort_by), $allowed_sort_columns)) {
+            $sort_by = "name";
+        }
+    
+        if (!in_array(strtolower($sort_order), $allowed_sort_order)) {
+            $sort_order = "asc";
+        }
+    
+        $query = "SELECT 
+                    p.id AS product_id,
+                    p.name,
+                    p.category_id,
+                    p.price_each AS price,
+                    p.description,
+                    w.quantity AS cart_quantity
+                  FROM wishlist w
+                  JOIN product p ON w.product_id = p.id
+                  WHERE w.user_id = :user_id";
+    
+        $params = ["user_id" => $user_id];
+    
+        if (!empty($search)) {
+            $query .= " AND LOWER(p.name) LIKE :search";
+            $params["search"] = "%" . strtolower($search) . "%";
+        }
+    
+        $query .= " ORDER BY $sort_by $sort_order";
+    
+        return $this->query($query, $params);
     }
 
     public function clear_wishlist($user_id)
     {
         $this->query("DELETE FROM wishlist WHERE user_id = :user_id", ["user_id" => $user_id]);
     }
+
+    public function get_wishlist_summary_by_user($user_id)
+    {
+        $query = "SELECT 
+                    SUM(w.quantity * p.price_each) AS total_value,
+                    SUM(w.quantity) AS total_count
+                  FROM wishlist w
+                  JOIN product p ON w.product_id = p.id
+                  WHERE w.user_id = :user_id";
+    
+        $params = ["user_id" => $user_id];
+    
+        $result = $this->query($query, $params);
+    
+        return [
+            "total_value" => $result[0]['total_value'] ?? 0, 
+            "total_count" => $result[0]['total_count'] ?? 0
+        ];
+    } 
 }

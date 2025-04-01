@@ -47,25 +47,64 @@ class ShoppingCartDao extends BaseDao {
         ]);
     }
 
-    public function get_cart_by_user($user_id)
+    public function get_cart_by_user($user_id, $search = "", $sort_by = "name", $sort_order = "asc")
     {
-        return $this->query(
-            "SELECT 
-                p.id AS product_id,
-                p.name,
-                p.category_id,
-                p.quantity AS product_stock,
-                p.description,
-                c.quantity AS cart_quantity
-            FROM cart c
-            JOIN product p ON c.product_id = p.id
-            WHERE c.user_id = :user_id",
-            ["user_id" => $user_id]
-        );
+        $allowed_sort_columns = ["name", "price_each"];
+        $allowed_sort_order = ["asc", "desc"];
+    
+        if (!in_array(strtolower($sort_by), $allowed_sort_columns)) {
+            $sort_by = "name";
+        }
+    
+        if (!in_array(strtolower($sort_order), $allowed_sort_order)) {
+            $sort_order = "asc";
+        }
+    
+        $query = "SELECT 
+                    p.id AS product_id,
+                    p.name,
+                    p.category_id,
+                    p.price_each AS price,
+                    p.description,
+                    c.quantity AS cart_quantity
+                  FROM cart c
+                  JOIN product p ON c.product_id = p.id
+                  WHERE c.user_id = :user_id";
+    
+        $params = ["user_id" => $user_id];
+    
+        if (!empty($search)) {
+            $query .= " AND LOWER(p.name) LIKE :search";
+            $params["search"] = "%" . strtolower($search) . "%";
+        }
+    
+        $query .= " ORDER BY $sort_by $sort_order";
+    
+        return $this->query($query, $params);
     }
 
     public function clear_cart($user_id)
     {
         $this->query("DELETE FROM cart WHERE user_id = :user_id", ["user_id" => $user_id]);
     }
+
+    public function get_cart_summary_by_user($user_id)
+    {
+        $query = "SELECT 
+                    SUM(c.quantity * p.price_each) AS total_value,
+                    SUM(c.quantity) AS total_count
+                  FROM cart c
+                  JOIN product p ON c.product_id = p.id
+                  WHERE c.user_id = :user_id";
+    
+        $params = ["user_id" => $user_id];
+    
+        $result = $this->query($query, $params);
+    
+        return [
+            "total_value" => $result[0]['total_value'] ?? 0, 
+            "total_count" => $result[0]['total_count'] ?? 0
+        ];
+    }    
+
 }

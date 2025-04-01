@@ -11,9 +11,25 @@ Flight::set('wishlist_service', new WishlistService());
 Flight::group('/wishlist', function () {
 
     Flight::route('GET /', function () {
-        $user_id = Flight::get('user');
-        $wishlist = Flight::get('wishlist_service')->get_wishlist_by_user($user_id);
+        $user_id = Flight::get('user'); 
+    
+        $queryParams = Flight::request()->query;
+
+        $search = isset($queryParams['search']) ? trim($queryParams['search']) : "";
+        $sort_by = isset($queryParams['sort_by']) ? strtolower($queryParams['sort_by']) : "name";
+        $sort_order = isset($queryParams['sort_order']) ? strtolower($queryParams['sort_order']) : "asc";
+
+        $wishlist = Flight::get('wishlist_service')->get_filtered_wishlist($user_id, $search, $sort_by, $sort_order);
+        
         Flight::json($wishlist);
+    });
+
+    Flight::route('GET /summary', function () {
+        $user_id = Flight::get('user'); 
+    
+        $summary = Flight::get('wishlist_service')->get_wishlist_summary_by_user($user_id);
+    
+        Flight::json($summary);
     });
 
     Flight::route('POST /add', function () {

@@ -11,10 +11,27 @@ Flight::set('cart_service', new ShoppingCartService());
 Flight::group('/cart', function () {
 
     Flight::route('GET /', function () {
-        $user_id = Flight::get('user');
-        $cart = Flight::get('cart_service')->get_cart_by_user($user_id);
+        $user_id = Flight::get('user'); 
+    
+        $queryParams = Flight::request()->query;
+
+        $search = isset($queryParams['search']) ? trim($queryParams['search']) : "";
+        $sort_by = isset($queryParams['sort_by']) ? strtolower($queryParams['sort_by']) : "name";
+        $sort_order = isset($queryParams['sort_order']) ? strtolower($queryParams['sort_order']) : "asc";
+
+        $cart = Flight::get('cart_service')->get_filtered_cart($user_id, $search, $sort_by, $sort_order);
+        
         Flight::json($cart);
     });
+
+    Flight::route('GET /summary', function () {
+        $user_id = Flight::get('user'); 
+    
+        $summary = Flight::get('cart_service')->get_cart_summary_by_user($user_id);
+    
+        Flight::json($summary);
+    });
+    
 
     Flight::route('POST /add', function () {
         $user_id = Flight::get('user');

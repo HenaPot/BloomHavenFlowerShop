@@ -24,13 +24,18 @@ class WishlistService {
         return $this->wishlistDao->update_quantity($user_id, $product_id, $quantity);
     }
 
-    public function get_wishlist_by_user($user_id)
+    public function get_filtered_wishlist($user_id, $search = "", $sort_by = "name", $sort_order = "asc")
     {
-        return $this->wishlistDao->get_wishlist_by_user($user_id);
+        return $this->wishlistDao->get_wishlist_by_user($user_id, $search, $sort_by, $sort_order);
     }
 
     public function clear_wishlist($user_id)
     {
         return $this->wishlistDao->clear_wishlist($user_id);
+    }
+
+    public function get_wishlist_summary_by_user($user_id)
+    {
+        return $this->wishlistDao->get_wishlist_summary_by_user($user_id);
     }
 }
