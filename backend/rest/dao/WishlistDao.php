@@ -1,26 +1,25 @@
 <?php
 require_once __DIR__ . "/BaseDao.php";
 
-class ShoppingCartDao extends BaseDao {
+class WishlistDao extends BaseDao {
     public function __construct()
     {
-        parent::__construct('cart');
+        parent::__construct('wishlist');
     }
 
-    public function add_to_cart($user_id, $product_id)
+    public function add_to_wishlist($user_id, $product_id)
     {
-        $cart_item = $this->query_unique(
-            "SELECT * FROM cart WHERE user_id = :user_id AND product_id = :product_id",
+        $wishlist_item = $this->query_unique(
+            "SELECT * FROM wishlist WHERE user_id = :user_id AND product_id = :product_id",
             ["user_id" => $user_id, "product_id" => $product_id]
         );
 
-        if ($cart_item) {
-            // Increase quantity by 1
-            $new_quantity = $cart_item['quantity'] + 1;
+        if ($wishlist_item) {
+            $new_quantity = $wishlist_item['quantity'] + 1;
             $this->update_quantity($user_id, $product_id, $new_quantity);
+
         } else {
-            // Insert new item
-            $this->insert("cart", [
+            $this->insert("wishlist", [
                 "user_id" => $user_id,
                 "product_id" => $product_id,
                 "quantity" => 1
@@ -28,9 +27,9 @@ class ShoppingCartDao extends BaseDao {
         }
     }
 
-    public function remove_from_cart($user_id, $product_id)
+    public function remove_from_wishlist($user_id, $product_id)
     {
-        $query = "DELETE FROM cart WHERE user_id = :user_id AND product_id = :product_id";
+        $query = "DELETE FROM wishlist WHERE user_id = :user_id AND product_id = :product_id";
         $this->query($query, [
             "user_id" => $user_id,
             "product_id" => $product_id
@@ -39,7 +38,7 @@ class ShoppingCartDao extends BaseDao {
 
     public function update_quantity($user_id, $product_id, $quantity)
     {
-        $query = "UPDATE cart SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id";
+        $query = "UPDATE wishlist SET quantity = :quantity WHERE user_id = :user_id AND product_id = :product_id";
         $this->query($query, [
             "quantity" => $quantity,
             "user_id" => $user_id,
@@ -47,7 +46,7 @@ class ShoppingCartDao extends BaseDao {
         ]);
     }
 
-    public function get_cart_by_user($user_id)
+    public function get_wishlist_by_user($user_id)
     {
         return $this->query(
             "SELECT 
@@ -56,16 +55,16 @@ class ShoppingCartDao extends BaseDao {
                 p.category_id,
                 p.quantity AS product_stock,
                 p.description,
-                c.quantity AS cart_quantity
-            FROM cart c
-            JOIN product p ON c.product_id = p.id
-            WHERE c.user_id = :user_id",
+                w.quantity AS wishlist_quantity
+            FROM wishlist w
+            JOIN product p ON w.product_id = p.id
+            WHERE w.user_id = :user_id",
             ["user_id" => $user_id]
         );
     }
 
-    public function clear_cart($user_id)
+    public function clear_wishlist($user_id)
     {
-        $this->query("DELETE FROM cart WHERE user_id = :user_id", ["user_id" => $user_id]);
+        $this->query("DELETE FROM wishlist WHERE user_id = :user_id", ["user_id" => $user_id]);
     }
 }

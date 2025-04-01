@@ -6,7 +6,7 @@ class ShoppingCartService {
 
     public function __construct()
     {
-        $this->shoppingCartDao = new shoppingCartDao();
+        $this->shoppingCartDao = new ShoppingCartDao();
     }
 
     public function add_to_cart($user_id, $product_id)
@@ -27,5 +27,10 @@ class ShoppingCartService {
     public function get_cart_by_user($user_id)
     {
         return $this->shoppingCartDao->get_cart_by_user($user_id);
+    }
+
+    public function clear_cart($user_id)
+    {
+        return $this->shoppingCartDao->clear_cart($user_id);
     }
 }

@@ -36,10 +36,10 @@ Flight::group('/cart', function () {
         Flight::json(['message' => 'Cart updated']);
     });
 
-    Flight::route('GET /', function () {
+    Flight::route('DELETE /clear', function () {
         $user_id = Flight::get('user');
-        $cart = Flight::get('cart_service')->get_cart_by_user($user_id);
-        Flight::json($cart);
+        Flight::get('cart_service')->clear_cart($user_id);
+        Flight::json(['message' => 'Cart cleared']);
     });
 
 });
