@@ -73,4 +73,37 @@ class BaseDao
         $entity['id'] = $this->connection->lastInsertId();
         return $entity;
    }
+   public function update($table, $id, $entity, $id_column = "id")
+    {
+        $id = (int) $id;
+
+        if (empty($entity)) {
+            throw new InvalidArgumentException("Update data cannot be empty.");
+        }
+
+        $query = "UPDATE `$table` SET ";
+        $fields = [];
+        foreach ($entity as $name => $value) {
+            $fields[] = "`$name` = :$name";
+        }
+        $query .= implode(", ", $fields);
+        $query .= " WHERE `$id_column` = :id";
+
+        $stmt = $this->connection->prepare($query);
+        $entity['id'] = $id;
+        $stmt->execute($entity);
+
+        return $entity;
+    }
+
+    public function delete($table, $id, $id_column = "id")
+    {
+        $id = (int) $id;
+
+        $query = "DELETE FROM `$table` WHERE `$id_column` = :id";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->rowCount() > 0; // Returns true if a row was deleted, false otherwise
+    }
 }

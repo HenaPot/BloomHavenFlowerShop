@@ -18,4 +18,12 @@ class UserService{
     public function get_user_by_id($user_id) {
         return $this->userDao->get_user_by_id($user_id);
     }
+
+    public function update_user($user_id, $user) {
+        return $this->userDao->update_user($user_id, $user);
+    }
+
+    public function delete_user($user_id) {
+        $this->userDao->delete_user( $user_id);
+    }
 }
