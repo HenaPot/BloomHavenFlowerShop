@@ -220,7 +220,7 @@
                 </div>
               
                 <div class="d-flex justify-content-center mt-4">
-                  <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg" data-bs-toggle="modal" data-bs-target="#card_modal">
+                  <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg">
                     <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
                   </button>
                 </div>
@@ -233,61 +233,3 @@
       </div>
     </div>
   </section>
-
-
-  <div class="modal fade" id="card_modal" aria-labelledby="card_modal_label">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="card_modal_label">Card Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form id="card_form">
-              <div class="row">
-              <div class="mb-3">
-                <label class="form-label" for="card_name">Cardholder's Name</label>
-                <input name="card_name" id="card_name" class="form-control form-control-md" placeholder="Hena Potogija" required />
-              </div>
-              <div class="mb-3">
-                <label class="form-label" for="card_num">Card Number</label>
-                <input name="card_num" id="card_num" class="form-control form-control-md" placeholder="1234 5678 91011 1213" required />
-              </div>
-              <div class="row">
-                <div class="mb-3 col-6">
-                  <label class="form-label" for="cvc">CVC</label>
-                  <input name="cvc" id="cvc" class="form-control form-control-md" placeholder="123" required/>
-                </div>
-                <div class="mb-3 col-6">
-                  <label class="form-label" for="exp_date">Expiration Date</label>
-                  <input name="exp_date" type="date" id="exp_date" class="form-control form-control-md" required />
-                </div>
-              </div>
-          </div>
-          <hr>
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Subtotal</p>
-                <p class="mb-2">$4798.00</p>
-              </div>
-
-              <div class="d-flex justify-content-between">
-                <p class="mb-2">Shipping</p>
-                <p class="mb-2">$20.00</p>
-              </div>
-
-              <div class="d-flex justify-content-between mb-4">
-                <p class="mb-2">Total(Incl. taxes)</p>
-                <p class="mb-2">$4818.00</p>
-              </div>
-            
-              <div class="d-flex justify-content-center mt-4">
-                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-success btn-lg">
-                    <span>Buy Now <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
-                </button>
-              </div>
-            </form>
-            </div>
-          </div>
-      </div>
-    </div>
-  </div>
