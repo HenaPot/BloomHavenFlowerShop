@@ -17,4 +17,25 @@ Flight::group('/users', function() {
         Flight::json($user);
     });
 
+    Flight::route('POST /update', function() {
+        $current_user_id = Flight::get('user');
+        $data = Flight::request()->data->getData();
+        
+        $user = Flight::get('user_service')->update_user($current_user_id, $data);
+        Flight::json(
+            $user
+        );
+    });
+
+    Flight::route('DELETE /delete/@user_id', function ($user_id) {
+        if($user_id == NULL || $user_id == '') {
+            Flight::halt(500, "Required parameters are missing!");
+        }
+
+        $user_service = new UserService();
+        $user_service->delete_user($user_id);
+        
+        Flight::json(['data' => NULL, 'message' => "You have successfully deleted the user"]);
+    });
+
 });
