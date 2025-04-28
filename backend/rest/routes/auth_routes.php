@@ -1,6 +1,8 @@
 <?php
     require_once __DIR__ . '/../../config.php';
     require_once __DIR__ . '/../services/AuthService.php';
+    require_once __DIR__ . '/../../utils/ResponseHelper.php';
+
 
     use Firebase\JWT\JWT;
     use Firebase\JWT\Key;
