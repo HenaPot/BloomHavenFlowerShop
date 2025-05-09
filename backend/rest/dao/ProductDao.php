@@ -15,6 +15,7 @@
          return $this->query_unique("
              SELECT 
                  p.id, 
+                 p.name,
                  c.name AS category, 
                  p.quantity, 
                  p.price_each, 
