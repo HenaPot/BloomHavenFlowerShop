@@ -54,6 +54,7 @@
      * )
      */
      Flight::route('POST /add', function () {
+         Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
          $data = Flight::request()->data->getData();
          $product = [
              'name' => $data['name'],
@@ -104,6 +105,7 @@
      * )
      */
      Flight::route('GET /@id', function ($id) {
+        Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
         $product = Flight::get('product_service')->get_product_by_id($id);
         ResponseHelper::handleServiceResponse($product);
      });
@@ -176,6 +178,7 @@
      * )
      */
      Flight::route('GET /', function () {
+         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
          $search = Flight::request()->query['search'] ?? null;
          $sort = Flight::request()->query['sort'] ?? null;
          $min_price = Flight::request()->query['min_price'] ?? null;
@@ -220,6 +223,7 @@
      * )
      */
      Flight::route('DELETE /delete/@product_id', function ($product_id) {
+         Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
          $product_service = new productService();
          $result = $product_service->delete_product($product_id);
          ResponseHelper::handleServiceResponse($result, "You have successfully deleted the product");
@@ -274,6 +278,7 @@
      * )
      */
      Flight::route('PUT /update/@id', function($id) {
+         Flight::auth_middleware()->authorizeRoles(Roles::ADMIN);
          $data = Flight::request()->data->getData();
          $product = Flight::get('product_service')->update_product($id, $data);
          ResponseHelper::handleServiceResponse($product);

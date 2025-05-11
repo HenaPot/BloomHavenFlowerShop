@@ -86,7 +86,7 @@ function display_user_profile() {
 
       // Update Profile Information in the card
       document.querySelector("#profile h5").textContent = response.name || "N/A";
-      document.querySelector("#profile p.text-muted.mb-4").textContent = (response.role_id === "1" ? "Customer" : "Administrator");
+      document.querySelector("#profile p.text-muted.mb-4").textContent = (response.role_id === "2" ? "Customer" : "Administrator");
 
       // Update Detailed Profile Information
       let profileFields = document.querySelectorAll("#profile .col-sm-9 p");

@@ -64,7 +64,7 @@
         function (response) {
           window.localStorage.setItem("token", response.token);
           window.localStorage.setItem("user_id", response.id);
-          window.localStorage.setItem("user", response.username);
+          window.localStorage.setItem("user", JSON.stringify(response));
 
           toastr.success("You logged in successfully.");
 

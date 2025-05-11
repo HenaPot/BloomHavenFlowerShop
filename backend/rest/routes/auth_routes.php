@@ -135,7 +135,7 @@
         
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         unset($data['repeat_password_signup']);
-        $data['role_id'] = 1;
+        $data['role_id'] = 2;
 
         $user = Flight::get('user_service')->add_user($data);
 
