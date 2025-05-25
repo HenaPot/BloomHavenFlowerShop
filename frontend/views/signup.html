@@ -1,7 +1,6 @@
 <section class="h-100">
   <div class="container-fluid h-100">
     <div class="row d-flex justify-content-center align-items-center h-100">
-
       <!-- Form Column -->
       <div class="col-md-8 col-lg-6 col-xl-4">
         <div class="text-center text-md-center mb-5 mt-4 pt-2">
@@ -16,50 +15,96 @@
                 <div class="input-group-prepend">
                   <div class="input-group-text">@</div>
                 </div>
-                <input name="username" type="text" class="form-control form-control-md" id="username" placeholder="Username">
+                <input
+                  name="username"
+                  type="text"
+                  class="form-control form-control-md"
+                  id="username"
+                  placeholder="Username"
+                />
               </div>
             </div>
 
             <!-- Birthday input -->
             <div class="mb-3 col-6">
-              <label class="form-label" for="date_of_birth">Date of Birth</label>
-              <input name="date_of_birth" type="date" id="date_of_birth" class="form-control form-control-md" placeholder="Choose your Date of Birth" />
+              <label class="form-label" for="date_of_birth"
+                >Date of Birth</label
+              >
+              <input
+                name="date_of_birth"
+                type="date"
+                id="date_of_birth"
+                class="form-control form-control-md"
+                placeholder="Choose your Date of Birth"
+              />
             </div>
           </div>
 
           <!-- Fullname input -->
           <div class="mb-3">
             <label class="form-label" for="name">Full Name</label>
-            <input name="name" id="name" class="form-control form-control-md" placeholder="Enter your Full name" />
+            <input
+              name="name"
+              id="name"
+              class="form-control form-control-md"
+              placeholder="Enter your Full name"
+            />
           </div>
 
           <!-- Email input -->
           <div class="mb-3">
             <label class="form-label" for="email">Email address</label>
-            <input name="email" type="email" id="email" class="form-control form-control-md" placeholder="Enter a valid email address" />
+            <input
+              name="email"
+              type="email"
+              id="email"
+              class="form-control form-control-md"
+              placeholder="Enter a valid email address"
+            />
           </div>
 
           <!-- Address input -->
           <div class="mb-3">
             <label class="form-label" for="address">Address</label>
-            <input name="address" id="address" class="form-control form-control-md" placeholder="Enter your address" />
+            <input
+              name="address"
+              id="address"
+              class="form-control form-control-md"
+              placeholder="Enter your address"
+            />
           </div>
 
           <!-- Password input -->
           <div class="mb-3">
             <label class="form-label" for="password">Password</label>
-            <input name="password" type="password" id="password" class="form-control form-control-md" placeholder="Enter password" />
+            <input
+              name="password"
+              type="password"
+              id="password"
+              class="form-control form-control-md"
+              placeholder="Enter password"
+            />
           </div>
 
           <!-- Password Repeat input -->
           <div class="mb-3">
-            <label class="form-label" for="repeat_password_signup">Repeat Password</label>
-            <input name="repeat_password_signup" type="password" id="repeat_password_signup" class="form-control form-control-md" placeholder="Repeat password" />
+            <label class="form-label" for="repeat_password_signup"
+              >Repeat Password</label
+            >
+            <input
+              name="repeat_password_signup"
+              type="password"
+              id="repeat_password_signup"
+              class="form-control form-control-md"
+              placeholder="Repeat password"
+            />
           </div>
 
           <!-- Sign Up Button -->
           <div class="text-center text-md-center mt-4 pt-2">
-            <button type="submit" class="btn btn-success btn-md px-5">Sign Up</button>
+            <button type="submit" class="btn btn-success btn-md px-5">
+              Sign Up
+            </button>
           </div>
         </form>
       </div>
@@ -68,51 +113,51 @@
 </section>
 
 <script>
- FormValidation.validate("#signup-form", 
-        {
-            username: "required",
-            date_of_birth: "required",
-            name: "required",
-            email: {
-                required: true,
-                email: true
-            },
-            address: {
-              required: true
-            },
-            password: {
-                required: true,
-                minlength: 3
-            },
-            repeat_password_signup: {
-                required: true,
-                equalTo: "#password"
-            }
-        }, 
-        {
-            username: "Please enter your username.",
-            date_of_birth: "Please enter your date of birth.",
-            name: "Please enter your full name.",
-            email: {
-                required: "Please enter your email address.",
-                email: "Please enter a valid email address."
-            },
-            address: {
-              required: "Please enter your address."
-            },
-            password: {
-                required: "Please provide a password.",
-                minlength: "Password must be at least 2 characters long.",
-                maxlength: "Password cannot exceed 10 characters."
-            },
-            repeat_password_signup: {
-                required: "Please repeat your password.",
-                equalTo: "Passwords do not match. Please try again."
-            }
-        }, 
+  FormValidation.validate(
+    "#signup-form",
+    {
+      username: "required",
+      date_of_birth: "required",
+      name: "required",
+      email: {
+        required: true,
+        email: true,
+      },
+      address: {
+        required: true,
+      },
+      password: {
+        required: true,
+        minlength: 3,
+      },
+      repeat_password_signup: {
+        required: true,
+        equalTo: "#password",
+      },
+    },
+    {
+      username: "Please enter your username.",
+      date_of_birth: "Please enter your date of birth.",
+      name: "Please enter your full name.",
+      email: {
+        required: "Please enter your email address.",
+        email: "Please enter a valid email address.",
+      },
+      address: {
+        required: "Please enter your address.",
+      },
+      password: {
+        required: "Please provide a password.",
+        minlength: "Password must be at least 2 characters long.",
+        maxlength: "Password cannot exceed 10 characters.",
+      },
+      repeat_password_signup: {
+        required: "Please repeat your password.",
+        equalTo: "Passwords do not match. Please try again.",
+      },
+    },
 
     function (data) {
-
       Utils.block_ui("#signup-form");
 
       RestClient.post(
@@ -121,10 +166,10 @@
         function (response) {
           window.localStorage.setItem("token", response.token);
           window.localStorage.setItem("user_id", response.id);
-          window.localStorage.setItem("user", response.username);
-          
+          window.localStorage.setItem("user", JSON.stringify(response));
+
           toastr.success("You have successfully added the user.");
-          window.location.href = '#profile';
+          window.location.href = "#profile";
         },
         function (xhr) {
           toastr.error("Sorry, something went wrong.");
@@ -132,6 +177,6 @@
       );
 
       Utils.unblock_ui("#signup-form");
-
-  });
+    }
+  );
 </script>

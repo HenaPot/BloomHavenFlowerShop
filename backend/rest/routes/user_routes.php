@@ -147,4 +147,35 @@ Flight::group('/users', function() {
         ResponseHelper::handleServiceResponse($result, "You have successfully deleted the user");
     });
 
+    Flight::route('POST /upload_image', function () {
+        Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
+        $user_id = Flight::get('user')->id;
+
+        if (!isset($_FILES['profile_picture'])) {
+            Flight::halt(400, 'No file uploaded.');
+        }
+
+        $file = $_FILES['profile_picture'];
+        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!in_array($file['type'], $allowed)) {
+            Flight::halt(400, 'Only JPG, PNG, or WEBP images are allowed.');
+        }
+
+        $uploads_dir = __DIR__ . '/../../uploads/';
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $new_name = uniqid("profile_", true) . '.' . $ext;
+        $target_path = $uploads_dir . $new_name;
+
+        if (!move_uploaded_file($file['tmp_name'], $target_path)) {
+            Flight::halt(500, 'Failed to move uploaded file.');
+        }
+
+        // Save relative image path to DB
+        $relative_url = '/uploads/' . $new_name;
+        Flight::get('user_service')->update_user($user_id, ['image' => $relative_url]);
+
+        echo json_encode(['status' => 'success', 'image_url' => $relative_url]);
+        
+    });
+
 });

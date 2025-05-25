@@ -33,12 +33,19 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   function updateNavbar() {
-      const hash = window.location.hash;
-      const isAuthPage = hash === "#login" || hash === "#signup" || hash === "#landing";
+    const hash = window.location.hash;
+    const isAuthPage =
+      hash === "#login" || hash === "#signup" || hash === "#landing";
 
-      document.getElementById("navbarLinks").classList.toggle("d-none", isAuthPage);
-      document.getElementById("authButtons").classList.toggle("d-none", !isAuthPage);
-      document.getElementById("navbarSearchForm").classList.toggle("d-none", isAuthPage);
+    document
+      .getElementById("navbarLinks")
+      .classList.toggle("d-none", isAuthPage);
+    document
+      .getElementById("authButtons")
+      .classList.toggle("d-none", !isAuthPage);
+    document
+      .getElementById("navbarSearchForm")
+      .classList.toggle("d-none", isAuthPage);
   }
 
   // Run on page load
@@ -49,9 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Logout functionality
   document.getElementById("logoutBtn").addEventListener("click", function () {
-      localStorage.clear(); // Clears stored data
-      window.location.hash = "#landing"; // Redirect to landing page
-      updateNavbar(); // Update UI immediately
+    localStorage.clear(); // Clears stored data
+    window.location.hash = "#landing"; // Redirect to landing page
+    updateNavbar(); // Update UI immediately
   });
 });
 
@@ -59,13 +66,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const navLinks = document.querySelectorAll(".nav-link");
 
   function updateActiveLink() {
-      const currentPage = window.location.hash || "#dashboard"; // Default to dashboard
-      navLinks.forEach(link => {
-          link.classList.remove("active");
-          if (link.getAttribute("href") === currentPage) {
-              link.classList.add("active");
-          }
-      });
+    const currentPage = window.location.hash || "#dashboard"; // Default to dashboard
+    navLinks.forEach((link) => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === currentPage) {
+        link.classList.add("active");
+      }
+    });
   }
 
   // Update active link when page loads
@@ -76,17 +83,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function display_user_profile() {
-
-  RestClient.get("users/current", function(response) {
+  RestClient.get(
+    "users/current",
+    function (response) {
       console.log("User Data:", response); // Debugging
 
       // Update Profile Picture (Use default if null)
       let profileImg = document.querySelector("#profile img");
-      profileImg.src = response.image ? response.image : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
+      profileImg.src = response.image
+        ? response.image
+        : "frontend/assets/images/ava3.webp";
+      profileImg.src = response.image
+        ? "http://localhost/WebProjekat/backend" + response.image
+        : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
 
       // Update Profile Information in the card
-      document.querySelector("#profile h5").textContent = response.name || "N/A";
-      document.querySelector("#profile p.text-muted.mb-4").textContent = (response.role_id === "2" ? "Customer" : "Administrator");
+      document.querySelector("#profile h5").textContent =
+        response.name || "N/A";
+      document.querySelector("#profile p.text-muted.mb-4").textContent =
+        response.role_id === "2" ? "Customer" : "Administrator";
 
       // Update Detailed Profile Information
       let profileFields = document.querySelectorAll("#profile .col-sm-9 p");
@@ -100,26 +115,83 @@ function display_user_profile() {
       document.querySelector("#edit_name").value = response.name || "";
       document.querySelector("#edit_username").value = response.username || "";
       document.querySelector("#edit_email").value = response.email || "";
-      document.querySelector("#edit_date_of_birth").value = response.date_of_birth || "";
+      document.querySelector("#edit_date_of_birth").value =
+        response.date_of_birth || "";
       document.querySelector("#edit_address").value = response.address || "";
-
-  }, function(error) {
+    },
+    function (error) {
       console.error("Error fetching user data:", error);
-  });
-
+    }
+  );
 }
 
 function displaySelectedImage(event, elementId) {
-    const selectedImage = document.getElementById(elementId);
-    const fileInput = event.target;
+  const selectedImage = document.getElementById(elementId);
+  const fileInput = event.target;
 
-    if (fileInput.files && fileInput.files[0]) {
-        const reader = new FileReader();
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
 
-        reader.onload = function(e) {
-            selectedImage.src = e.target.result;
-        };
+    reader.onload = function (e) {
+      selectedImage.src = e.target.result;
+    };
 
-        reader.readAsDataURL(fileInput.files[0]);
-    }
+    reader.readAsDataURL(fileInput.files[0]);
+  }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  const saveButton = document.querySelector(
+    "#edit_profile_form button.btn-success"
+  );
+  if (saveButton) {
+    saveButton.addEventListener("click", function () {
+      const formData = new FormData();
+      const imageInput = document.querySelector("#profile_picture");
+
+      if (imageInput.files.length > 0) {
+        formData.append("profile_picture", imageInput.files[0]);
+
+        fetch("http://localhost/web_project/backend/rest/users/upload_image", {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.status === "success") {
+              // Update user image visually
+              document.querySelector("#profile img").src = data.image_url;
+              toastr.success("Profile picture updated!");
+              display_user_profile(); // Refresh user info
+            } else {
+              toastr.error("Image upload failed.");
+            }
+          })
+          .catch((err) => {
+            console.error("Upload error:", err);
+            toastr.error("Something went wrong while uploading image.");
+          });
+      } else {
+        toastr.warning("Please choose an image file first.");
+      }
+    });
+  }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (user && user.role_id == 1) {
+    const dashboardLink = document.querySelector("#nav-dashboard");
+    if (dashboardLink) {
+      dashboardLink.setAttribute("href", "#admin_dashboard");
+      dashboardLink.innerHTML = `
+        <i class="fa-solid fa-screwdriver-wrench fa-lg my-2"></i>
+        <span class="small">Admin Dashboard</span>
+      `;
+    }
+  }
+});

@@ -7,8 +7,8 @@
         <div class="col-lg-4">
           <div class="card mb-4 border border-2 border-success">
             <div class="card-body text-center">
-              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" referrerpolicy="no-referrer" alt="avatar"
-                class="rounded-circle img-fluid" style="width: 150px;">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                class="rounded-circle img-fluid profile-img" style="width: 150px;">
               <h5 class="my-3">John Smith</h5>
               <p class="text-muted mb-4">Role - Customer</p>
               <div class="d-flex justify-content-center mb-2">
@@ -92,7 +92,7 @@
                 <div class="d-flex justify-content-center">
                     <div data-mdb-ripple-init class="btn btn-sm btn-success">
                         <label class="form-label text-white m-1" for="profile_picture">Choose file</label>
-                        <input type="file" class="form-control d-none" id="profile_picture" onchange="displaySelectedImage(event, 'selectedImage')" />
+                        <input type="file" class="form-control d-none" id="profile_picture" name = "file" onchange="displaySelectedImage(event, 'selectedImage')" />
                     </div>
                 </div>
             </div>

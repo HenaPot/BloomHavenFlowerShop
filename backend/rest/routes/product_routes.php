@@ -284,5 +284,91 @@
          ResponseHelper::handleServiceResponse($product);
      });
      
+    /**
+     * @OA\Post(
+     *     path="/products/upload_image/{product_id}",
+     *     summary="Upload an image for a product.",
+     *     description="Uploads an image file for the specified product. Only JPG, PNG, or WEBP images are allowed.",
+     *     tags={"Products"},
+     *     security={{"ApiKey": {}}},
+     *     @OA\Parameter(
+     *         name="product_id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the product to upload the image for",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Image file to upload",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"product_image"},
+     *                 @OA\Property(
+     *                     property="product_image",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="The image file to upload (JPG, PNG, WEBP)"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product image uploaded successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Product image uploaded successfully.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid input or file type",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="No file uploaded.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Failed to move uploaded file.")
+     *         )
+     *     )
+     * )
+     */
+    Flight::route('POST /upload_image/@product_id', function($product_id) {
+        Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+        if (!isset($_FILES['product_image'])) {
+            Flight::halt(400, 'No file uploaded.');
+        }
+
+        $file = $_FILES['product_image'];
+        $allowed = ['image/jpeg', 'image/png', 'image/webp'];
+
+        if (!in_array($file['type'], $allowed)) {
+            Flight::halt(400, 'Only JPG, PNG, or WEBP images are allowed.');
+        }
+
+        $uploads_dir = __DIR__ . '/../../uploads/';
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $new_name = uniqid("product_", true) . '.' . $ext;
+        $target_path = $uploads_dir . $new_name;
+
+        if (!move_uploaded_file($file['tmp_name'], $target_path)) {
+            Flight::halt(500, 'Failed to move uploaded file.');
+        }
+
+        // Save image path to product_image table
+        $relative_url = '/uploads/' . $new_name;
+        $product_service = Flight::get('product_service');
+        $result = $product_service->add_product_image([
+            'product_id' => $product_id,
+            'image' => $relative_url
+        ]);
+
+        ResponseHelper::handleServiceResponse($result, 'Product image uploaded successfully.');
+    });
  
  });

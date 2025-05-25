@@ -376,5 +376,16 @@ em.error {
   background-color: #198754 !important;
 }
 
+.profile-img {
+  width: 150px !important; 
+  height: 150px !important; 
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+
 
 
