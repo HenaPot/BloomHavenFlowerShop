@@ -1,12 +1,7 @@
 var UserService = {
   init: function () {
     const token = localStorage.getItem("token");
-    if (token) {
-      // Redirect if already logged in
-      window.location.hash = "#profile"; // or "#admin_dashboard" based on role if needed
-    }
 
-    // Attach validation and login handler
     FormValidation.validate(
       "#login-form",
       {
@@ -31,7 +26,55 @@ var UserService = {
           maxlength: "Password cannot exceed 10 characters.",
         },
       },
-      AuthService.login
+      UserService.login
+    );
+
+    // Signup form validation
+    FormValidation.validate(
+      "#signup-form",
+      {
+        username: "required",
+        date_of_birth: "required",
+        name: "required",
+        email: {
+          required: true,
+          email: true,
+        },
+        address: {
+          required: true,
+        },
+        password: {
+          required: true,
+          minlength: 3,
+          maxlength: 10,
+        },
+        repeat_password_signup: {
+          required: true,
+          equalTo: "#password",
+        },
+      },
+      {
+        username: "Please enter your username.",
+        date_of_birth: "Please enter your date of birth.",
+        name: "Please enter your full name.",
+        email: {
+          required: "Please enter your email address.",
+          email: "Please enter a valid email address.",
+        },
+        address: {
+          required: "Please enter your address.",
+        },
+        password: {
+          required: "Please provide a password.",
+          minlength: "Password must be at least 3 characters long.",
+          maxlength: "Password cannot exceed 10 characters.",
+        },
+        repeat_password_signup: {
+          required: "Please repeat your password.",
+          equalTo: "Passwords do not match. Please try again.",
+        },
+      },
+      UserService.signup
     );
   },
 
@@ -63,51 +106,29 @@ var UserService = {
     );
   },
 
+  signup: function (data) {
+    Utils.block_ui("#signup-form");
+
+    RestClient.post(
+        "auth/register",
+        data,
+        function (response) {
+        const loginData = {
+            email: data.email,
+            password: data.password
+        };
+
+        UserService.login(loginData);
+        },
+        function (xhr) {
+        Utils.unblock_ui("#signup-form");
+        toastr.error("Sorry, something went wrong during registration.");
+        }
+    );
+  },
+
   logout: function () {
     localStorage.clear();
     window.location.replace("login.html");
-  },
-
-  generateMenuItems: function () {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.replace("login.html");
-      return;
-    }
-
-    const user = Utils.parseJwt(token); // You may need to implement `parseJwt`
-
-    if (!user || !user.role_id) {
-      window.location.replace("login.html");
-      return;
-    }
-
-    let nav = "";
-    let main = "";
-
-    if (user.role_id == 2) {
-      // Regular user
-      nav += `
-        <li><a href="#profile">Profile</a></li>
-        <li><button onclick="AuthService.logout()" class="btn btn-sm btn-primary">Logout</button></li>
-      `;
-      main += `
-        <section id="profile" data-load="profile.html"></section>
-      `;
-    } else {
-      // Admin
-      nav += `
-        <li><a href="#admin_dashboard">Dashboard</a></li>
-        <li><a href="#users">Users</a></li>
-        <li><button onclick="AuthService.logout()" class="btn btn-sm btn-primary">Logout</button></li>
-      `;
-      main += `
-        <section id="admin_dashboard" data-load="admin_dashboard.html"></section>
-        <section id="users" data-load="users.html"></section>
-      `;
-    }
-
-    $("#tabs").html(nav);
-    $("#spapp").html(main);
-  },
+  }
 };
