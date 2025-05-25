@@ -188,7 +188,6 @@
          $products = Flight::get('product_service')->get_all_products($search, $sort, $min_price, $max_price, $category_id);
      
          ResponseHelper::handleServiceResponse($products);
-
      });
  
      /**

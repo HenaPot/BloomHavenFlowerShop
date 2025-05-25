@@ -244,16 +244,11 @@ editProfile: function () {
   $("#edit_modal").modal("hide");
   UserService.getUserData();
 }
-
     },
     function (xhr) {
       const response = xhr.responseJSON || {};
       const msg = response.message || "Something went wrong while updating your profile.";
       toastr.error(msg);
-    }
-  );
-}
-
-
-
+    });
+  }
 };

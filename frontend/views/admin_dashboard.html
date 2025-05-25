@@ -94,51 +94,6 @@
                     <input type="text" id="itemSearch" class="form-control mb-3" placeholder="Search items...">
                     <div class="table-responsive">
                         <table class="table table-hover" id="itemsTable">
-                            <thead>
-                                <tr>
-                                    <th>Item ID</th>
-                                    <th>Name</th>
-                                    <th>Category</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="itemsBody">
-                                <tr>
-                                    <td>001</td>
-                                    <td>Rose Bouquet</td>
-                                    <td>Flowers</td>
-                                    <td>$29.99</td>
-                                    <td>50</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success save-order" data-bs-toggle="modal" data-bs-target="#editItemModal">Edit</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>002</td>
-                                    <td>Tulip Bundle</td>
-                                    <td>Flowers</td>
-                                    <td>$24.99</td>
-                                    <td>30</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success save-order" data-bs-toggle="modal" data-bs-target="#editItemModal">Edit</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>003</td>
-                                    <td>Lily Arrangement</td>
-                                    <td>Flowers</td>
-                                    <td>$35.99</td>
-                                    <td>20</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success save-order" data-bs-toggle="modal" data-bs-target="#editItemModal">Edit</button>
-                                        <button class="btn btn-sm btn-danger">Delete</button>
-                                    </td>
-                                </tr>
-                            </tbody>
                         </table>
                     </div>
                 </div>
@@ -159,23 +114,28 @@
                 <form id="addItemForm">
                     <div class="mb-3">
                         <label for="formFileMultiple" class="form-label">Upload Multiple Pictures</label>
-                        <input class="form-control" type="file" id="formFileMultiple" multiple>
-                      </div>
+                        <input class="form-control" type="file" id="formFileMultiple" name="product_images" multiple>
+                    </div>
                     <div class="mb-3">
                         <label for="itemName" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="itemName" required>
+                        <input type="text" class="form-control" id="itemName" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="itemCategory" class="form-label">Category</label>
-                        <input type="text" class="form-control" id="itemCategory" required>
+                            <select class="form-control" name="category_id">
+                            </select>
                     </div>
                     <div class="mb-3">
-                        <label for="itemQuantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="itemQuantity" required>
+                        <label for="itemQuantity" class="form-label">Quantity ID</label>
+                        <input type="number" class="form-control" id="itemQuantity" name="quantity" required>
                     </div>
                     <div class="mb-3">
                         <label for="itemPrice" class="form-label">Price</label>
-                        <input type="number" class="form-control" id="itemPrice" step="0.01" required>
+                        <input type="number" class="form-control" id="itemPrice" name="price_each" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="itemDescription" name="description"></textarea>
                     </div>
                 </form>
             </div>
@@ -188,7 +148,7 @@
 </div>
 
 <!-- Edit Item Modal (Same as Add Item Modal) -->
-<div class="modal fade" id="editItemModal" tabindex="-1" aria-labelledby="editItemModalLabel" aria-hidden="true">
+<div class="modal fade" id="editItemModal" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -199,23 +159,32 @@
                 <form id="editItemForm">
                     <div class="mb-3">
                         <label for="formFileMultiple" class="form-label">Upload Multiple Pictures</label>
-                        <input class="form-control" type="file" id="formFileMultiple" multiple>
+                        <input class="form-control" type="file" id="formFileMultiple" name="product_images" multiple>
                       </div>
                     <div class="mb-3">
                         <label for="itemName" class="form-label">Name</label>
-                        <input type="text" class="form-control" id="itemName" required>
+                        <input type="text" class="form-control" id="itemName" name="name" required>
                     </div>
                     <div class="mb-3">
                         <label for="itemCategory" class="form-label">Category</label>
-                        <input type="text" class="form-control" id="itemCategory" required>
+                        <select class="form-control" name="category_id">
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="itemQuantity" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" id="itemQuantity" required>
+                        <input type="number" class="form-control" id="itemQuantity" name="quantity" required>
                     </div>
                     <div class="mb-3">
                         <label for="itemPrice" class="form-label">Price</label>
-                        <input type="number" class="form-control" id="itemPrice" step="0.01" required>
+                        <input type="number" class="form-control" id="itemPrice" name="price_each" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="itemPrice" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="description" name="description" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" form="addItemForm" class="btn btn-success">Save</button>
                     </div>
                 </form>
             </div>
@@ -226,4 +195,13 @@
 <script>
     new DataTable('#ordersTable');
     new DataTable('#itemsTable');
+</script>
+
+<script src="./frontend/services/product-service.js"></script>
+
+<script>
+$(document).ready(function () {
+  ProductService.init();
+  ProductService.getAllProducts();
+});
 </script>

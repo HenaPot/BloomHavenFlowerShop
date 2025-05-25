@@ -70,7 +70,7 @@ class BaseDao
 
         $statement = $this->connection->prepare($query);
         $statement->execute($entity); // SQL injection prevention
-        // $entity['id'] = $this->connection->lastInsertId();
+        $entity['id'] = $this->connection->lastInsertId();
         return $entity;
    }
    public function update($table, $id, $entity, $id_column = "id")
