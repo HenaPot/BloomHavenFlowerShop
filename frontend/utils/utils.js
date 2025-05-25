@@ -8,7 +8,7 @@ const Utils = {
         app.route({
           view: "profile",
           onReady: function () {
-              display_user_profile();
+              UserService.getUserData();
           }
         });
 

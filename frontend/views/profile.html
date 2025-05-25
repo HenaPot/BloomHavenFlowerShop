@@ -15,7 +15,7 @@
                 <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-success" data-bs-toggle="modal" data-bs-target="#edit_modal">Edit my Profile</button>
               </div>
               <div class="d-flex justify-content-center mb-2">
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger">Delete my Account</button>
+                <button id="delete-account-btn" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger">Delete my Account</button>
             </div>
             </div>
           </div>
@@ -131,18 +131,33 @@
               <label class="form-label" for="edit_address">Address</label>
               <input name="edit_address" id="edit_address" class="form-control form-control-md" value="Bay Area, San Francisco, CA" />
             </div>
-        </div>
+        <!-- </div> -->
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-success">Save changes</button>
+          <button type="submit" id="save" class="btn btn-success">Save changes</button>
         </div>
        </form>
       </div>
     </div>
   </div>
 
+<script src="./frontend/services/user-service.js"></script>
 <script>
+$(document).ready(function () {
+  $("#delete-account-btn").on("click", function () {
+    UserService.deleteAccount();
+  });
 
+  UserService.getUserData();
+});
+</script>
 
+<script>
+  $(document).ready(function () {
+  $("#edit_profile_form").on("submit", function (e) {
+    e.preventDefault(); // Prevent actual form submission
+    UserService.editProfile();
+  });
+});
 </script>
 
