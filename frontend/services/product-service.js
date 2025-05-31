@@ -112,7 +112,7 @@ var ProductService = {
             title: 'Actions',
                 render: function (data, type, row, meta) {
                     const rowStr = encodeURIComponent(JSON.stringify(row));
-                    return `<div class="d-flex justify-content-center gap-2 mt-3">
+                    return `<div class="d-flex justify-content-center gap-2 mt-1">
                         <button class="btn btn-sm btn-success save-order" data-bs-target="#editItemModal" onclick="ProductService.openEditModal('${row.id}')">Edit</button>
                         <button class="btn btn-danger" onclick="ProductService.openDeleteConfirmationDialog(decodeURIComponent('${rowStr}'))">Delete</button>
                     </div>
@@ -124,36 +124,30 @@ var ProductService = {
         console.error('Error fetching data from file:', error);
     });
   },
-getProductById: function(id, callback) {
-  RestClient.get('products/' + id, function(data) {
-    console.log("=== PRODUCT DATA ===", data);
 
-    localStorage.setItem('selected_product', JSON.stringify(data));
+  getProductById: function(id, callback) {
+    RestClient.get('products/' + id, function(data) {
+      localStorage.setItem('selected_product', JSON.stringify(data));
 
-    $('input[name="name"]').val(data.name);
-    $('input[name="quantity"]').val(data.quantity);
-    $('input[name="price_each"]').val(data.price_each);
-    $('input[name="description"]').val(data.description);
+      $('input[name="name"]').val(data.name);
+      $('input[name="quantity"]').val(data.quantity);
+      $('input[name="price_each"]').val(data.price_each);
+      $('input[name="description"]').val(data.description);
 
-    RestClient.get('categories/category?name=' + encodeURIComponent(data.category), function (categoryData) {
-      if (categoryData && categoryData.id) {
-        $('select[name="category_id"]').val(categoryData.id).trigger('change');
-      } else {
-        console.error('Category ID not found for category:', data.category);
-      }
+      RestClient.get('categories/category?name=' + encodeURIComponent(data.category), function (categoryData) {
+        if (categoryData && categoryData.id) {
+          $('select[name="category_id"]').val(categoryData.id).trigger('change');
+        } else {
+          console.error('Category ID not found for category:', data.category);
+        }
 
-      if (callback) callback(); // ✅ pozovi modal tek kad sve završi
+        if (callback) callback(); // ✅ pozovi modal tek kad sve završi
+      });
+
+    }, function(xhr, status, error) {
+      console.error('Error fetching product data:', error);
     });
-
-  }, function(xhr, status, error) {
-    console.error('Error fetching product data:', error);
-  });
-},
-
-
-
-
-
+  },
 
   openEditModal: function (id) {
   Utils.block_ui("#editItemModal");
@@ -166,8 +160,7 @@ getProductById: function(id, callback) {
   });
 },
 
-
-  loadCategories: function () {
+loadCategories: function () {
   return new Promise(function (resolve, reject) {
     RestClient.get('categories', function (categories) {
       const categorySelect = $('select[name="category_id"]');
@@ -254,6 +247,6 @@ openDeleteConfirmationDialog: function (productStr) {
       toastr.error("Error deleting the product.");
     }
   );
-
-  Utils.unblock_ui("body");},
+    Utils.unblock_ui("body");
+  }
 };

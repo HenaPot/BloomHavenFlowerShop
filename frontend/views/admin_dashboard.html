@@ -91,7 +91,6 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="itemSearch" class="form-control mb-3" placeholder="Search items...">
                     <div class="table-responsive">
                         <table class="table table-hover" id="itemsTable">
                         </table>
@@ -198,13 +197,13 @@
 </script>
 
 <script src="./frontend/services/product-service.js"></script>
+<script src="./frontend/services/order-service.js"></script>
 
 <script>
   $(document).ready(function () {
     ProductService.init();
     ProductService.getAllProducts();
 
-    // ✅ Validacija forme
     FormValidation.validate(
       "#editItemForm",
       {
@@ -237,10 +236,15 @@
       }
     );
 
-    // ✅ Save dugme – pokreće updateProduct tek na klik submit
     $('#editItemForm').on('submit', function (e) {
       e.preventDefault();
       ProductService.updateProduct();
     });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    OrderService.getAllOrders();
   });
 </script>
