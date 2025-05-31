@@ -1,5 +1,24 @@
 var ProductService = {
   init: function () {
+    ProductService.loadCategories();
+    
+    $('#addItemModal').on('show.bs.modal', function () {
+      const form = document.getElementById('addItemForm');
+      if (form) {
+        form.reset();
+
+        const fileInput = form.querySelector('input[type="file"]');
+        if (fileInput) {
+          fileInput.value = '';
+        }
+
+        const selects = form.querySelectorAll('select');
+        selects.forEach(select => {
+          select.selectedIndex = 0;
+        });
+      }
+    });
+    
     FormValidation.validate(
       "#addItemForm",
       {
@@ -35,9 +54,7 @@ var ProductService = {
   },
 
   addProduct: function (data) {
-    ProductService.loadCategories();
     Utils.block_ui("#addItemForm");
-
     RestClient.post(
       "products/add",
       data,
@@ -96,7 +113,7 @@ var ProductService = {
                     const rowStr = encodeURIComponent(JSON.stringify(row));
                     return `<div class="d-flex justify-content-center gap-2 mt-3">
                         <button class="btn btn-sm btn-success save-order" data-bs-target="#editItemModal" onclick="ProductService.openEditModal('${row.id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="ProductService.openConfirmationDialog(decodeURIComponent('${rowStr}'))">Delete</button>
+                        <button class="btn btn-danger" onclick="ProductService.openDeleteConfirmationDialog(decodeURIComponent('${rowStr}'))">Delete</button>
                     </div>
                     `;
                 }
@@ -115,26 +132,23 @@ getProductById: function(id) {
     $('input[name="quantity"]').val(data.quantity);
     $('input[name="price_each"]').val(data.price_each);
     $('input[name="description"]').val(data.description);
-    $('select[name="category_id"]').val(data.category).trigger('change');;
-
+    $('select[name="category_id"] option').each(function () {
+    if ($(this).text().trim() === data.category.trim()) {
+      $(this).prop('selected', true).trigger('change');
+    }});
     $.unblockUI();
   }, function(xhr, status, error) {
     console.error('Error fetching product data:', error);
-  });
-},
+  });},
 
   openEditModal : function(id) {
-      Utils.block_ui("#editItemModal");
-      ProductService.loadCategories();
-       $('#editItemModal').modal('show');
-       ProductService.getProductById(id) 
-      Utils.unblock_ui("#editItemModal");
-   },
-  //  closeModal : function() {
-  //      $('#editStudentModal').hide();
-  //      $("#deleteStudentModal").modal("hide");
-  //      $('#addStudentModal').hide();
-  //  },
+    Utils.block_ui("#editItemModal");
+    ProductService.loadCategories();
+    $('#editItemModal').modal('show');
+    ProductService.getProductById(id);
+    Utils.unblock_ui("#editItemModal");
+  },
+
   loadCategories: function () {
   RestClient.get('categories', function (categories) {
     const categorySelect = $('select[name="category_id"]');
@@ -150,7 +164,42 @@ getProductById: function(id) {
     });
   }, function (xhr, status, error) {
     console.error('Failed to load categories:', error);
-  });
-}
+  });},
+
+  openDeleteConfirmationDialog: function (productStr) {
+  try {
+    const product = JSON.parse(productStr);
+    ProductService.deleteProduct(product.id);
+  } catch (e) {
+    console.error("Invalid product data for deletion:", e);
+    toastr.error("Failed to parse product data.");
+  }},
+
+  deleteProduct: function (productId) {
+  if (!productId) {
+    toastr.error("Product ID not provided.");
+    return;
+  }
+
+  if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+    return;
+  }
+
+  Utils.block_ui("body"); // You can change this selector to match your UI
+
+  RestClient.delete(
+    `products/delete/${productId}`,
+    {},
+    function (response) {
+      toastr.success("Product has been deleted successfully.");
+      ProductService.getAllProducts();
+    },
+    function (error) {
+      toastr.error("Error deleting the product.");
+    }
+  );
+
+  Utils.unblock_ui("body");
+},
 
 };
