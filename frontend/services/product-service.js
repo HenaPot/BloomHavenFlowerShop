@@ -18,7 +18,6 @@ var ProductService = {
         });
       }
     });
-    
     FormValidation.validate(
       "#addItemForm",
       {
@@ -54,7 +53,9 @@ var ProductService = {
   },
 
   addProduct: function (data) {
+    ProductService.loadCategories()
     Utils.block_ui("#addItemForm");
+
     RestClient.post(
       "products/add",
       data,
@@ -123,50 +124,105 @@ var ProductService = {
         console.error('Error fetching data from file:', error);
     });
   },
-  
-getProductById: function(id) {
+getProductById: function(id, callback) {
   RestClient.get('products/' + id, function(data) {
+    console.log("=== PRODUCT DATA ===", data);
+
     localStorage.setItem('selected_product', JSON.stringify(data));
 
     $('input[name="name"]').val(data.name);
     $('input[name="quantity"]').val(data.quantity);
     $('input[name="price_each"]').val(data.price_each);
     $('input[name="description"]').val(data.description);
-    $('select[name="category_id"] option').each(function () {
-    if ($(this).text().trim() === data.category.trim()) {
-      $(this).prop('selected', true).trigger('change');
-    }});
-    $.unblockUI();
+
+    RestClient.get('categories/category?name=' + encodeURIComponent(data.category), function (categoryData) {
+      if (categoryData && categoryData.id) {
+        $('select[name="category_id"]').val(categoryData.id).trigger('change');
+      } else {
+        console.error('Category ID not found for category:', data.category);
+      }
+
+      if (callback) callback(); // ✅ pozovi modal tek kad sve završi
+    });
+
   }, function(xhr, status, error) {
     console.error('Error fetching product data:', error);
-  });},
+  });
+},
 
-  openEditModal : function(id) {
-    Utils.block_ui("#editItemModal");
-    ProductService.loadCategories();
-    $('#editItemModal').modal('show');
-    ProductService.getProductById(id);
-    Utils.unblock_ui("#editItemModal");
-  },
+
+
+
+
+
+  openEditModal: function (id) {
+  Utils.block_ui("#editItemModal");
+
+  ProductService.loadCategories().then(function () {
+    ProductService.getProductById(id, function () {
+      $('#editItemModal').modal('show');
+      Utils.unblock_ui("#editItemModal");
+    });
+  });
+},
+
 
   loadCategories: function () {
-  RestClient.get('categories', function (categories) {
-    const categorySelect = $('select[name="category_id"]');
-    categorySelect.empty(); // Clear existing options
+  return new Promise(function (resolve, reject) {
+    RestClient.get('categories', function (categories) {
+      const categorySelect = $('select[name="category_id"]');
+      categorySelect.empty(); // Clear existing options
 
-    categories.forEach(function (category) {
-      categorySelect.append(
-        $('<option>', {
-          value: category.id,
-          text: category.name,
-        })
-      );
+      categories.forEach(function (category) {
+        categorySelect.append(
+          $('<option>', {
+            value: category.id,
+            text: category.name,
+          })
+        );
+      });
+
+      resolve(); // Sve prošlo dobro
+    }, function (xhr, status, error) {
+      console.error('Failed to load categories:', error);
+      reject(error);
     });
-  }, function (xhr, status, error) {
-    console.error('Failed to load categories:', error);
-  });},
+  });
+},
 
-  openDeleteConfirmationDialog: function (productStr) {
+updateProduct: function () {
+  const product = JSON.parse(localStorage.getItem("selected_product"));
+  const productId = product.id;
+
+  const updatedData = {
+    name: $('#editItemForm input[name="name"]').val(),
+    quantity: parseInt($('#editItemForm input[name="quantity"]').val()),
+    price_each: parseFloat($('#editItemForm input[name="price_each"]').val()),
+    description: $('#editItemForm input[name="description"]').val(),
+    category_id: parseInt($('#editItemForm select[name="category_id"]').val())
+  };
+
+  console.log("=== UPDATE PRODUCT ===", updatedData);
+
+  Utils.block_ui("#editItemModal");
+
+  RestClient.put(
+    "products/update/" + productId,
+    updatedData,
+    function () {
+      toastr.success("Product updated successfully.");
+      $("#editItemModal").modal("hide");
+      ProductService.getAllProducts();
+      Utils.unblock_ui("#editItemModal");
+    },
+    function () {
+      toastr.error("Failed to update product.");
+      Utils.unblock_ui("#editItemModal");
+    }
+  );
+},
+
+openDeleteConfirmationDialog: function (productStr) {
   try {
     const product = JSON.parse(productStr);
     ProductService.deleteProduct(product.id);
@@ -199,7 +255,5 @@ getProductById: function(id) {
     }
   );
 
-  Utils.unblock_ui("body");
-},
-
+  Utils.unblock_ui("body");},
 };
