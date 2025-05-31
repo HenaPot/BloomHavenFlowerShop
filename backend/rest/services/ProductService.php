@@ -17,10 +17,9 @@ class ProductService {
     }
 
     public function get_product_by_id($id) {
-        if (empty($id)) {
-            return "Invalid input";
-        }
-        return $this->productDao->get_product_by_id($id);
+        $product = $this->productDao->get_product_by_id($id);
+        $product['images'] = $this->productDao->get_images_by_product_id($id); 
+        return $product;
     }
 
     public function get_all_products($search = null, $sort = null, $min_price = null, $max_price = null, $category_id = null) {
@@ -43,5 +42,13 @@ class ProductService {
 
     public function add_product_image($data) {
         return $this->productDao->insert('product_image', $data);
+    }
+
+    public function get_images_by_product_id($product_id) {
+        return $this->productDao->get_images_by_product_id($product_id);
+    }
+
+    public function delete_product_image($image_id) {
+        return $this->productDao->delete_product_image($image_id);
     }
 }

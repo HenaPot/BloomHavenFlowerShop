@@ -133,6 +133,32 @@ var ProductService = {
       $('input[name="quantity"]').val(data.quantity);
       $('input[name="price_each"]').val(data.price_each);
       $('input[name="description"]').val(data.description);
+      const imageContainer = document.getElementById("existingImages");
+      imageContainer.innerHTML = ""; 
+
+      if (data.images && data.images.length > 0) {
+        data.images.forEach(img => {
+          const imageWrapper = document.createElement("div");
+          imageWrapper.classList.add("position-relative");
+
+          const imageElement = document.createElement("img");
+          imageElement.src = 'backend/' + img.image;
+          imageElement.classList.add("img-thumbnail");
+          imageElement.style.height = "100px";
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.innerHTML = "&times;";
+          deleteBtn.classList.add("btn", "btn-sm", "btn-danger", "position-absolute", "top-0", "end-0");
+          deleteBtn.onclick = function () {
+            imageWrapper.remove();
+          };
+
+          imageWrapper.dataset.imageId = img.id;
+          imageWrapper.appendChild(imageElement);
+          imageWrapper.appendChild(deleteBtn);
+          imageContainer.appendChild(imageWrapper);
+        });
+      }
 
       RestClient.get('categories/category?name=' + encodeURIComponent(data.category), function (categoryData) {
         if (categoryData && categoryData.id) {
@@ -195,18 +221,40 @@ updateProduct: function () {
     category_id: parseInt($('#editItemForm select[name="category_id"]').val())
   };
 
-  console.log("=== UPDATE PRODUCT ===", updatedData);
-
   Utils.block_ui("#editItemModal");
 
   RestClient.put(
     "products/update/" + productId,
     updatedData,
     function () {
-      toastr.success("Product updated successfully.");
-      $("#editItemModal").modal("hide");
-      ProductService.getAllProducts();
-      Utils.unblock_ui("#editItemModal");
+      const existingImageIds = Array.from(document.querySelectorAll("#existingImages div"))
+        .map(div => parseInt(div.dataset.imageId));
+
+      const newImagesInput = document.getElementById("formFileMultiple1");
+      const formData = new FormData();
+      formData.append("existingImageIds", JSON.stringify(existingImageIds));
+
+      if (newImagesInput.files.length > 0) {
+        for (let i = 0; i < newImagesInput.files.length; i++) {
+          formData.append("new_images[]", newImagesInput.files[i]);
+        }
+      }
+
+      RestClient.uploadFile(
+        `products/product_images/${productId}`,
+        formData,
+        function () {
+          toastr.success("Product and images updated.");
+          document.getElementById("formFileMultiple1").value = "";
+          $("#editItemModal").modal("hide");
+          ProductService.getAllProducts();
+          Utils.unblock_ui("#editItemModal");
+        },
+        function () {
+          toastr.error("Failed to update images.");
+          Utils.unblock_ui("#editItemModal");
+        }
+      );
     },
     function () {
       toastr.error("Failed to update product.");

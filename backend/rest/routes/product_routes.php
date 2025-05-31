@@ -369,5 +369,59 @@
 
         ResponseHelper::handleServiceResponse($result, 'Product image uploaded successfully.');
     });
+
+    Flight::route('POST /product_images/@product_id', function($product_id) {
+        Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+
+        $product_service = Flight::get('product_service');
+
+        $existingImageIds = json_decode(Flight::request()->data['existingImageIds'] ?? '[]');
+
+        if (!is_array($existingImageIds)) {
+            Flight::halt(400, 'Invalid image ID list.');
+        }
+
+        $allImages = $product_service->get_images_by_product_id($product_id);
+        foreach ($allImages as $img) {
+            if (!in_array($img['id'], $existingImageIds)) {
+                $file_path = __DIR__ . '/../../' . ltrim($img['image'], '/');
+                if (file_exists($file_path)) {
+                    unlink($file_path);
+                }
+                $product_service->delete_product_image($img['id']);
+            }
+        }
+
+        if (isset($_FILES['new_images'])) {
+            $newImages = $_FILES['new_images'];
+
+            $isSingle = !is_array($newImages['tmp_name']);
+            $fileCount = $isSingle ? 1 : count($newImages['tmp_name']);
+
+            for ($i = 0; $i < $fileCount; $i++) {
+                $tmpName = $isSingle ? $newImages['tmp_name'] : $newImages['tmp_name'][$i];
+                $fileType = $isSingle ? $newImages['type'] : $newImages['type'][$i];
+                $fileName = $isSingle ? $newImages['name'] : $newImages['name'][$i];
+
+                $allowed = ['image/jpeg', 'image/png', 'image/webp'];
+                if (!in_array($fileType, $allowed)) continue;
+
+                $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+                $new_name = uniqid("product_", true) . '.' . $ext;
+                $target_path = __DIR__ . '/../../uploads/' . $new_name;
+
+                if (move_uploaded_file($tmpName, $target_path)) {
+                    $relative_url = '/uploads/' . $new_name;
+                    $product_service->add_product_image([
+                        'product_id' => $product_id,
+                        'image' => $relative_url
+                    ]);
+                }
+            }
+        }
+
+        Flight::json(["message" => "Product images updated successfully."]);
+    });
+
  
  });
