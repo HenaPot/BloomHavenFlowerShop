@@ -1,81 +1,51 @@
 <section class="vh-100">
-    <div class="container-fluid h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-  
-        <!-- Form Column -->
-        <div class="col-md-8 col-lg-6 col-xl-4">
-          <div class="text-center text-md-center mb-5 mt-4 pt-2">
-            <h2>Log In</h2>
-          </div>
-          <form class="p-5 mb-5 form_border" id="login-form">
-
-            <!-- Email input -->
-            <div class="mb-3">
-              <label class="form-label" for="email">Email address</label>
-              <input name="email" type="email" id="email" class="form-control form-control-md" placeholder="Enter a valid email address" />
-            </div>
-  
-            <!-- Password input -->
-            <div class="mb-3">
-              <label class="form-label" for="password">Password</label>
-              <input name="password" type="password" id="password" class="form-control form-control-md" placeholder="Enter password" />
-            </div>
-  
-            <!-- Log In Button -->
-            <div class="text-center text-md-center mt-4 pt-2">
-              <button type="submit" class="btn btn-success btn-md px-5">Log In</button>
-            </div>
-          </form>
+  <div class="container-fluid h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <!-- Form Column -->
+      <div class="col-md-8 col-lg-6 col-xl-4">
+        <div class="text-center text-md-center mb-5 mt-4 pt-2">
+          <h2>Log In</h2>
         </div>
+        <form class="p-5 mb-5 form_border" id="login-form">
+          <!-- Email input -->
+          <div class="mb-3">
+            <label class="form-label" for="email">Email address</label>
+            <input
+              name="email"
+              type="email"
+              id="email"
+              class="form-control form-control-md"
+              placeholder="Enter a valid email address"
+            />
+          </div>
+
+          <!-- Password input -->
+          <div class="mb-3">
+            <label class="form-label" for="password">Password</label>
+            <input
+              name="password"
+              type="password"
+              id="password"
+              class="form-control form-control-md"
+              placeholder="Enter password"
+            />
+          </div>
+
+          <!-- Log In Button -->
+          <div class="text-center text-md-center mt-4 pt-2">
+            <button type="submit" class="btn btn-success btn-md px-5">
+              Log In
+            </button>
+          </div>
+        </form>
       </div>
     </div>
-  </section>
-  
-  <script>
-      FormValidation.validate("#login-form",           
-          {
-              email: {
-                  required: true,
-                  email: true
-              },
-              password: {
-                  required: true,
-                  minlength: 3
-              }
-          }, 
-          {
-              email: {
-                  required: "Please enter your email address.",
-                  email: "Please enter a valid email address."
-              },
-              password: {
-                  required: "Please provide a password.",
-                  minlength: "Password must be at least 2 characters long.",
-                  maxlength: "Password cannot exceed 10 characters."
-              }
-          },
-      function (data) {
+  </div>
+</section>
 
-      Utils.block_ui("#login-form");
-
-      RestClient.post(
-        "auth/login",
-        data,
-        function (response) {
-          window.localStorage.setItem("token", response.token);
-          window.localStorage.setItem("user_id", response.id);
-          window.localStorage.setItem("user", response.username);
-
-          toastr.success("You logged in successfully.");
-
-          window.location.hash = "#profile";
-        },
-        function (error) {
-          toastr.error("Error occurred while logging into your account.");
-        }
-      );
-
-      Utils.unblock_ui("#login-form");
-
-    });
-  </script>
+<script src="./frontend/services/user-service.js"></script>
+<script>
+  $(document).ready(function () {
+    UserService.init();
+  });
+</script>

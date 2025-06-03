@@ -44,6 +44,7 @@ Flight::group('/item_in_order', function () {
      * )
      */
     Flight::route('POST /', function () {
+        Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
         $data = Flight::request()->data->getData();
         $item_in_order = Flight::get('item_in_order_service')->add_item_in_order($data["order_id"], $data["product_id"], $data["quantity"]);
         ResponseHelper::handleServiceResponse($item_in_order);

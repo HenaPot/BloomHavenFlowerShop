@@ -53,6 +53,7 @@
      * )
      */
      Flight::route('POST /add', function() {
+         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
          $data = Flight::request()->data->getData();
          $customer_id = $data['customer_id'];
          $product_id = $data['product_id'];
@@ -97,8 +98,8 @@
      * )
      */
      Flight::route('GET /', function() {
-         $user_id = Flight::get('user');
-    
+         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
+         $user_id = Flight::get('user')->id;
          $productViewService = Flight::get('product_view_service');
          $result = $productViewService->getUserProductViews($user_id);
          ResponseHelper::handleServiceResponse($result);
