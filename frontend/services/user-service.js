@@ -200,7 +200,7 @@ var UserService = {
     });
   }, 
 
-editProfile: function () {
+  editProfile: function () {
   const form = document.getElementById("edit_profile_form");
   const formData = new FormData(form);
 
@@ -250,5 +250,5 @@ editProfile: function () {
       const msg = response.message || "Something went wrong while updating your profile.";
       toastr.error(msg);
     });
-  }
+  },
 };

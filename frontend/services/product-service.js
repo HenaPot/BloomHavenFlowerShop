@@ -1,5 +1,23 @@
 var ProductService = {
   init: function () {
+    ProductService.loadCategories();
+    
+    $('#addItemModal').on('show.bs.modal', function () {
+      const form = document.getElementById('addItemForm');
+      if (form) {
+        form.reset();
+
+        const fileInput = form.querySelector('input[type="file"]');
+        if (fileInput) {
+          fileInput.value = '';
+        }
+
+        const selects = form.querySelectorAll('select');
+        selects.forEach(select => {
+          select.selectedIndex = 0;
+        });
+      }
+    });
     FormValidation.validate(
       "#addItemForm",
       {
@@ -35,7 +53,7 @@ var ProductService = {
   },
 
   addProduct: function (data) {
-    ProductService.loadCategories();
+    ProductService.loadCategories()
     Utils.block_ui("#addItemForm");
 
     RestClient.post(
@@ -94,9 +112,9 @@ var ProductService = {
             title: 'Actions',
                 render: function (data, type, row, meta) {
                     const rowStr = encodeURIComponent(JSON.stringify(row));
-                    return `<div class="d-flex justify-content-center gap-2 mt-3">
+                    return `<div class="d-flex justify-content-center gap-2 mt-1">
                         <button class="btn btn-sm btn-success save-order" data-bs-target="#editItemModal" onclick="ProductService.openEditModal('${row.id}')">Edit</button>
-                        <button class="btn btn-danger" onclick="ProductService.openConfirmationDialog(decodeURIComponent('${rowStr}'))">Delete</button>
+                        <button class="btn btn-danger" onclick="ProductService.openDeleteConfirmationDialog(decodeURIComponent('${rowStr}'))">Delete</button>
                     </div>
                     `;
                 }
@@ -106,51 +124,215 @@ var ProductService = {
         console.error('Error fetching data from file:', error);
     });
   },
-  
-getProductById: function(id) {
-  RestClient.get('products/' + id, function(data) {
-    localStorage.setItem('selected_product', JSON.stringify(data));
 
-    $('input[name="name"]').val(data.name);
-    $('input[name="quantity"]').val(data.quantity);
-    $('input[name="price_each"]').val(data.price_each);
-    $('input[name="description"]').val(data.description);
-    $('select[name="category_id"]').val(data.category).trigger('change');;
+  getProductById: function(id, callback) {
+    RestClient.get('products/' + id, function(data) {
+      localStorage.setItem('selected_product', JSON.stringify(data));
 
-    $.unblockUI();
-  }, function(xhr, status, error) {
-    console.error('Error fetching product data:', error);
+      $('input[name="name"]').val(data.name);
+      $('input[name="quantity"]').val(data.quantity);
+      $('input[name="price_each"]').val(data.price_each);
+      $('input[name="description"]').val(data.description);
+      const imageContainer = document.getElementById("existingImages");
+      imageContainer.innerHTML = ""; 
+
+      if (data.images && data.images.length > 0) {
+        data.images.forEach(img => {
+          const imageWrapper = document.createElement("div");
+          imageWrapper.classList.add("position-relative");
+
+          const imageElement = document.createElement("img");
+          imageElement.src = 'backend/' + img.image;
+          imageElement.classList.add("img-thumbnail");
+          imageElement.style.height = "100px";
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.innerHTML = "&times;";
+          deleteBtn.classList.add("btn", "btn-sm", "btn-danger", "position-absolute", "top-0", "end-0");
+          deleteBtn.onclick = function () {
+            imageWrapper.remove();
+          };
+
+          imageWrapper.dataset.imageId = img.id;
+          imageWrapper.appendChild(imageElement);
+          imageWrapper.appendChild(deleteBtn);
+          imageContainer.appendChild(imageWrapper);
+        });
+      }
+
+      RestClient.get('categories/category?name=' + encodeURIComponent(data.category), function (categoryData) {
+        if (categoryData && categoryData.id) {
+          $('select[name="category_id"]').val(categoryData.id).trigger('change');
+        } else {
+          console.error('Category ID not found for category:', data.category);
+        }
+
+        if (callback) callback(); // ✅ pozovi modal tek kad sve završi
+      });
+
+    }, function(xhr, status, error) {
+      console.error('Error fetching product data:', error);
+    });
+  },
+
+  openEditModal: function (id) {
+  Utils.block_ui("#editItemModal");
+
+  ProductService.loadCategories().then(function () {
+    ProductService.getProductById(id, function () {
+      $('#editItemModal').modal('show');
+      Utils.unblock_ui("#editItemModal");
+    });
   });
 },
 
-  openEditModal : function(id) {
-      Utils.block_ui("#editItemModal");
-      ProductService.loadCategories();
-       $('#editItemModal').modal('show');
-       ProductService.getProductById(id) 
-      Utils.unblock_ui("#editItemModal");
-   },
-  //  closeModal : function() {
-  //      $('#editStudentModal').hide();
-  //      $("#deleteStudentModal").modal("hide");
-  //      $('#addStudentModal').hide();
-  //  },
-  loadCategories: function () {
-  RestClient.get('categories', function (categories) {
-    const categorySelect = $('select[name="category_id"]');
-    categorySelect.empty(); // Clear existing options
+loadCategories: function () {
+  return new Promise(function (resolve, reject) {
+    RestClient.get('categories', function (categories) {
+      const categorySelect = $('select[name="category_id"]');
+      categorySelect.empty(); // Clear existing options
 
-    categories.forEach(function (category) {
-      categorySelect.append(
-        $('<option>', {
-          value: category.id,
-          text: category.name,
-        })
-      );
+      categories.forEach(function (category) {
+        categorySelect.append(
+          $('<option>', {
+            value: category.id,
+            text: category.name,
+          })
+        );
+      });
+
+      resolve(); // Sve prošlo dobro
+    }, function (xhr, status, error) {
+      console.error('Failed to load categories:', error);
+      reject(error);
     });
-  }, function (xhr, status, error) {
-    console.error('Failed to load categories:', error);
   });
-}
+},
 
+updateProduct: function () {
+  const product = JSON.parse(localStorage.getItem("selected_product"));
+  const productId = product.id;
+
+  const updatedData = {
+    name: $('#editItemForm input[name="name"]').val(),
+    quantity: parseInt($('#editItemForm input[name="quantity"]').val()),
+    price_each: parseFloat($('#editItemForm input[name="price_each"]').val()),
+    description: $('#editItemForm input[name="description"]').val(),
+    category_id: parseInt($('#editItemForm select[name="category_id"]').val())
+  };
+
+  Utils.block_ui("#editItemModal");
+
+  RestClient.put(
+    "products/update/" + productId,
+    updatedData,
+    function () {
+      const existingImageIds = Array.from(document.querySelectorAll("#existingImages div"))
+        .map(div => parseInt(div.dataset.imageId));
+
+      const newImagesInput = document.getElementById("formFileMultiple1");
+      const formData = new FormData();
+      formData.append("existingImageIds", JSON.stringify(existingImageIds));
+
+      if (newImagesInput.files.length > 0) {
+        for (let i = 0; i < newImagesInput.files.length; i++) {
+          formData.append("new_images[]", newImagesInput.files[i]);
+        }
+      }
+
+      RestClient.uploadFile(
+        `products/product_images/${productId}`,
+        formData,
+        function () {
+          toastr.success("Product and images updated.");
+          document.getElementById("formFileMultiple1").value = "";
+          $("#editItemModal").modal("hide");
+          ProductService.getAllProducts();
+          Utils.unblock_ui("#editItemModal");
+        },
+        function () {
+          toastr.error("Failed to update images.");
+          Utils.unblock_ui("#editItemModal");
+        }
+      );
+    },
+    function () {
+      toastr.error("Failed to update product.");
+      Utils.unblock_ui("#editItemModal");
+    }
+  );
+},
+
+openDeleteConfirmationDialog: function (productStr) {
+  try {
+    const product = JSON.parse(productStr);
+    ProductService.deleteProduct(product.id);
+  } catch (e) {
+    console.error("Invalid product data for deletion:", e);
+    toastr.error("Failed to parse product data.");
+  }},
+
+  deleteProduct: function (productId) {
+  if (!productId) {
+    toastr.error("Product ID not provided.");
+    return;
+  }
+
+  if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+    return;
+  }
+
+  Utils.block_ui("body"); // You can change this selector to match your UI
+
+  RestClient.delete(
+    `products/delete/${productId}`,
+    {},
+    function (response) {
+      toastr.success("Product has been deleted successfully.");
+      ProductService.getAllProducts();
+    },
+    function (error) {
+      toastr.error("Error deleting the product.");
+    }
+  );
+    Utils.unblock_ui("body");
+  },
+
+  loadProducts: function (filters = {}) {
+    const params = new URLSearchParams(filters).toString();
+    const url = params ? `products?${params}` : "products";
+
+    RestClient.get(
+      url,
+      function (products) {
+        const container = document.getElementById("products-list");
+        container.innerHTML = "";
+
+        if (!products.length) {
+          container.innerHTML = "<div class='col-12 text-center'>No products found.</div>";
+          return;
+        }
+
+        products.forEach(product => {
+          container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h5 class="card-title mb-3">${product.name}</h5>
+                  <p class="mb-1"><strong>Category:</strong> ${product.category_name}</p>
+                  <p class="mb-1"><strong>Price:</strong> $${product.price_each}</p>
+                  <p class="mb-1"><strong>Quantity:</strong> ${product.quantity}</p>
+                  <p class="mb-1">${product.description || ""}</p>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+      },
+      function () {
+        document.getElementById("products-list").innerHTML =
+          "<div class='col-12 text-center'>Failed to load products.</div>";
+      }
+    );
+  },
 };

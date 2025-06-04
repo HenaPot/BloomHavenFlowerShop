@@ -119,3 +119,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
+
+$(document).on('change', '.order-status-dropdown', function () {
+  const orderId = $(this).data('order-id');
+  const newStatusId = $(this).val();
+  OrderService.updateOrderStatus(orderId, newStatusId);
+});
+
+$(document).off('click', '.delete-order-btn').on('click', '.delete-order-btn', function () {
+  const orderId = $(this).data('order-id');
+  OrderService.openDeleteConfirmationDialog(orderId);
+});

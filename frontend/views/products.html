@@ -1,132 +1,15 @@
 <section id="products" style="background-color: #eee;">   
     <div class="text-center container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <h2 class="fw-bold">Featured Products</h2>
-            <button class="btn btn-success btn-md" data-bs-toggle="modal" data-bs-target="#filter_modal">
-                <i class="fa-solid fa-filter"></i> Filters
-            </button>
-        </div>
-      <div class="row">
-        <div class="col-lg-4 col-md-12 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-              data-mdb-ripple-color="light">
-              <img src="./frontend/assets/images/kvalitetno_cvijece.webp"
-                class="card-img-top img-fluid" />
-            </div>
-            <div class="card-body">
-              <a href="#flower" class="text-reset">
-                <h5 class="card-title mb-3">Product name</h5>
-              </a>
-              <a href="#flower" class="text-reset">
-                <p>Category</p>
-              </a>
-              <h6 class="mb-3">$61.99</h6>
-            </div>
-          </div>
-        </div>
-  
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-              data-mdb-ripple-color="light">
-              <img src="./frontend/assets/images/rose_buket.webp"
-                class="card-img-top img-fluid" />
-            </div>
-            <div class="card-body">
-              <a href="#flower" class="text-reset">
-                <h5 class="card-title mb-3">Product name</h5>
-              </a>
-              <a href="#flower" class="text-reset">
-                <p>Category</p>
-              </a>
-              <h6 class="mb-3">$61.99</h6>
-            </div>
-          </div>
-        </div>
-  
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
-              <img src="./frontend/assets/images/cvijece.webp"
-                class="card-img-top img-fluid" />
-            </div>
-            <div class="card-body">
-              <a href="#flower" class="text-reset">
-                <h5 class="card-title mb-3">Product name</h5>
-              </a>
-              <a href="#flower" class="text-reset">
-                <p>Category</p>
-              </a>
-              <h6 class="mb-3">
-                $61.99
-              </h6>
-            </div>
-          </div>
-        </div>
+      <div class="d-flex justify-content-between align-items-center mb-5">
+          <h2 class="fw-bold">Featured Products</h2>
+          <button class="btn btn-success btn-md" data-bs-toggle="modal" data-bs-target="#filter_modal">
+              <i class="fa-solid fa-filter"></i> Filters
+          </button>
       </div>
   
+      <div id="products-list" class="row"></div>
+        
       <div class="row">
-        <div class="col-lg-4 col-md-12 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
-              <img src="./frontend/assets/images/purple_flowers.jfif"
-                class="card-img-top img-fluid" />
-            </div>
-            <div class="card-body">
-              <a href="#flower" class="text-reset">
-                <h5 class="card-title mb-3">Product name</h5>
-              </a>
-              <a href="#flower" class="text-reset">
-                <p>Category</p>
-              </a>
-              <h6 class="mb-3">
-                $61.99
-              </h6>
-            </div>
-          </div>
-        </div>
-  
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple ripple-surface ripple-surface-light"
-              data-mdb-ripple-color="light">
-              <img src="./frontend/assets/images/buket.jpg"
-                class="card-img-top img-fluid" />
-            </div>
-            <div class="card-body">
-              <a href="#flower" class="text-reset">
-                <h5 class="card-title mb-3">Product name</h5>
-              </a>
-              <a href="#flower" class="text-reset">
-                <p>Category</p>
-              </a>
-              <h6 class="mb-3">$61.99</h6>
-            </div>
-          </div>
-        </div>
-  
-        <div class="col-lg-4 col-md-6 mb-4">
-          <div class="card">
-            <div class="bg-image hover-zoom ripple" data-mdb-ripple-color="light">
-              <img src="./frontend/assets/images/flowers.jpg"
-                class="card-img-top img-fluid" />
-            </div>
-            <div class="card-body">
-              <a href="#flower" class="text-reset">
-                <h5 class="card-title mb-3">Product name</h5>
-              </a>
-              <a href="#flower" class="text-reset">
-                <p>Category</p>
-              </a>
-              <h6 class="mb-3">
-                $61.99
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row ">
         <nav aria-label="Page navigation example">
           <ul class="pagination align-items-center">
             <li class="page-item"><a class="page-link" href="#">Previous</a></li>
@@ -138,7 +21,7 @@
         </nav>
       </div>
     </div>
-  </section>
+</section>
 
 <!-- Modal -->
   
@@ -209,9 +92,8 @@
       </div>
     </div>
 
-
 <script>
-    document.getElementById("resetBtn").addEventListener("click", function () {
+  document.getElementById("resetBtn").addEventListener("click", function () {
   document.querySelectorAll(".category-checkbox").forEach(checkbox => checkbox.checked = false);
   document.getElementById("priceRange").value = "";
   document.getElementById("sortBy").value = "";
@@ -226,4 +108,11 @@ document.getElementById("applyBtn").addEventListener("click", function () {
   console.log("Selected Price Range:", selectedPrice);
   console.log("Selected Sort Option:", selectedSort);
 });
+</script>
+
+<script src="./frontend/services/product-service.js"></script>
+<script>
+  $(document).ready(function () {
+    ProductService.loadProducts();
+  });
 </script>

@@ -1,12 +1,15 @@
 <?php
 require_once __DIR__ . "/../dao/OrderDao.php";
+require_once __DIR__ . "/../dao/OrderStatusDao.php";
 
 class OrderService {
     private $orderDao;
+    private $orderStatusDao;
 
     public function __construct()
     {
         $this->orderDao = new OrderDao();
+        $this->orderStatusDao = new OrderStatusDao();
     }
 
     public function add_order($user_id, $order)
@@ -51,5 +54,14 @@ class OrderService {
     {
         if (empty($order_id)) return "Invalid input";
         return $this->orderDao->delete_order($order_id);
+    }
+
+    public function get_order_statuses()
+    {
+        return $this->orderStatusDao->get_order_statuses();
+    }
+
+    public function get_all_orders() {
+        return $this->orderDao->get_all_orders();
     }
 }

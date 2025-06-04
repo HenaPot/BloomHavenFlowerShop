@@ -276,4 +276,43 @@ Flight::group('/order', function () {
         ResponseHelper::handleServiceResponse($result, 'Order updated');
     });
 
+    Flight::route('GET /statuses', function () {
+        Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+        $statuses = Flight::get('order_service')->get_order_statuses();
+        ResponseHelper::handleServiceResponse($statuses);
+    });
+
+    /**
+     * @OA\Get(
+     *     path="/order/all_orders",
+     *     summary="Get all orders for all users (admin only).",
+     *     description="Fetches all orders from all users. Admin only.",
+     *     tags={"Order"},
+     *     security={{"ApiKey": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of all orders for all users",
+     *         @OA\JsonContent(type="array", @OA\Items(
+     *             @OA\Property(property="order_id", type="integer", example=1),
+     *             @OA\Property(property="user_name", type="string", example="Ilma"),
+     *             @OA\Property(property="user_email", type="string", example="ilma@gmail.com"),
+     *             @OA\Property(property="order_date", type="string", example="2025-05-30 15:00:00"),
+     *             @OA\Property(property="product_names", type="string", example="Candle,Soap"),
+     *             @OA\Property(property="quantities", type="string", example="2,3"),
+     *             @OA\Property(property="total_price", type="number", example=78.50),
+     *             @OA\Property(property="status_name", type="string", example="Pending")
+     *         ))
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Access denied"
+     *     )
+     * )
+     */
+    Flight::route('GET /all_orders', function () {
+        Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+        $orders = Flight::get('order_service')->get_all_orders();
+        ResponseHelper::handleServiceResponse($orders);
+    });
+
 });
