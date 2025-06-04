@@ -341,4 +341,18 @@ openDeleteConfirmationDialog: function (productStr) {
       }
     );
   },
+  renderCategoryCheckboxes: function () {
+    RestClient.get("categories", function (categories) {
+      const container = document.getElementById("category-checkboxes");
+      container.innerHTML = "";
+      categories.forEach(cat => {
+        container.innerHTML += `
+          <div class="form-check category-item">
+            <input class="form-check-input category-checkbox" type="checkbox" id="cat${cat.id}" value="${cat.id}">
+            <label class="form-check-label p-2" for="cat${cat.id}">${cat.name}</label>
+          </div>
+        `;
+      });
+    });
+  },
 };

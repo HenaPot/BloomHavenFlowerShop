@@ -60,16 +60,24 @@
      
          // Filter by category
          if ($category_id !== null) {
-             $query .= " AND p.category_id = :category_id";
-             $params['category_id'] = $category_id;
-         }
+            // Check if it's a comma-separated list (e.g., "1,2,3")
+            if (str_contains($category_id, ',')) {
+                $ids = array_map('intval', explode(',', $category_id));
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $query .= " AND p.category_id IN ($placeholders)";
+                $params = array_merge($params, $ids); // Add each ID to params
+            } else {
+                $query .= " AND p.category_id = ?";
+                $params[] = (int)$category_id;
+            }
+        }
      
          // Sorting
-         if ($sort === 'asc') {
-             $query .= " ORDER BY p.price_each ASC";
-         } elseif ($sort === 'desc') {
-             $query .= " ORDER BY p.price_each DESC";
-         }
+         if ($sort === 'price_asc') {
+            $query .= " ORDER BY p.price_each ASC";
+        } elseif ($sort === 'price_desc') {
+            $query .= " ORDER BY p.price_each DESC";
+        }
      
          return $this->query($query, $params);
      }
