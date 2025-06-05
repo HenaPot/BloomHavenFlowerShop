@@ -12,6 +12,30 @@ const Utils = {
           }
         });
 
+        app.route({
+          view: "flower",
+          onReady: function () {
+              ProductService.renderProductDetails();
+          }
+        });
+
+        app.route({
+          view: "admin_dashboard",
+          onReady: function () {
+              ProductService.init();
+              ProductService.getAllProducts();
+              OrderService.getAllOrders();
+          }
+        });
+
+        app.route({
+          view: "products",
+          onReady: function () {
+              ProductService.renderCategoryCheckboxes();
+              ProductService.loadProducts();
+          }
+        });
+
         app.run();
     },
     block_ui: function (element) {

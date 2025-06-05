@@ -314,14 +314,14 @@ openDeleteConfirmationDialog: function (productStr) {
         }
 
         products.forEach(product => {
-        // Get the first image URL or fallback
-        const imageUrl = (product.images && product.images.length > 0)
-          ? 'backend/' + product.images[0].image // assuming image paths start with `/uploads/...`
-          : 'frontend/assets/images/kvalitetno_cvijece.webp'; // your default placeholder image
+          const imageUrl = (product.images && product.images.length > 0)
+            ? 'backend/' + product.images[0].image
+            : 'frontend/assets/images/kvalitetno_cvijece.webp';
 
+          // Render card with a data attribute for the product ID
           container.innerHTML += `
             <div class="col-lg-4 col-md-6 mb-4">
-              <div class="card h-100">
+              <div class="card h-100 product-card" data-product-id="${product.id}" style="cursor:pointer;">
                 <img src="${imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Product Image">
                 <div class="card-body">
                   <h5 class="card-title mb-3">${product.name}</h5>
@@ -333,7 +333,16 @@ openDeleteConfirmationDialog: function (productStr) {
               </div>
             </div>
           `;
-      });
+        });
+
+        // Add click listeners to all product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            localStorage.setItem('selected_product_id', productId);
+            window.location.hash = "#flower";
+          });
+        });
       },
       function () {
         document.getElementById("products-list").innerHTML =
@@ -353,6 +362,46 @@ openDeleteConfirmationDialog: function (productStr) {
           </div>
         `;
       });
+    });
+  },
+
+  renderProductDetails: function() {
+    const productId = localStorage.getItem('selected_product_id');
+    if (!productId) return;
+
+    RestClient.get('products/' + productId, function(product) {
+      document.getElementById('flower-name').textContent = product.name;
+      document.getElementById('flower-category').textContent = product.category;
+      document.getElementById('flower-price').textContent = "$" + product.price_each;
+      document.getElementById('flower-quantity').textContent = product.quantity;
+      document.getElementById('flower-description').textContent = product.description;
+
+      // Images
+      const mainImage = document.getElementById('flower-main-image');
+      const thumbnails = document.getElementById('flower-thumbnails');
+      thumbnails.innerHTML = "";
+
+      if (product.images && product.images.length > 0) {
+        // Set main image to the first image
+        mainImage.src = 'backend/' + product.images[0].image;
+
+        // Render all thumbnails
+        product.images.forEach((img, idx) => {
+          const thumb = document.createElement('img');
+          thumb.src = 'backend/' + img.image;
+          thumb.className = "img-thumbnail";
+          thumb.style.height = "70px";
+          thumb.style.width = "70px";
+          thumb.style.objectFit = "cover";
+          thumb.style.cursor = "pointer";
+          thumb.onclick = function() {
+            mainImage.src = thumb.src;
+          };
+          thumbnails.appendChild(thumb);
+        });
+      } else {
+        mainImage.src = 'frontend/assets/images/kvalitetno_cvijece.webp';
+      }
     });
   },
 };
