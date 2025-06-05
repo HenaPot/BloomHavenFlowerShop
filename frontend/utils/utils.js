@@ -8,31 +8,60 @@ const Utils = {
         app.route({
           view: "profile",
           onReady: function () {
-              UserService.getUserData();
+            ProductService.handleNavbarSearch();
+            UserService.getUserData();
           }
         });
 
         app.route({
           view: "flower",
           onReady: function () {
-              ProductService.renderProductDetails();
+            ProductService.handleNavbarSearch();
+            ProductService.renderProductDetails();
           }
         });
 
         app.route({
           view: "admin_dashboard",
           onReady: function () {
-              ProductService.init();
-              ProductService.getAllProducts();
-              OrderService.getAllOrders();
+            ProductService.handleNavbarSearch();
+            ProductService.init();
+            ProductService.getAllProducts();
+            OrderService.getAllOrders();
+          }
+        });
+
+        app.route({
+          view: "dashboard",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
           }
         });
 
         app.route({
           view: "products",
           onReady: function () {
-              ProductService.renderCategoryCheckboxes();
-              ProductService.loadProducts();
+            ProductService.handleNavbarSearch();
+            ProductService.renderCategoryCheckboxes();
+            const searchInput = document.getElementById("navbar-search-input");
+            const searchTerm = localStorage.getItem("products_search_term") || "";
+            localStorage.removeItem("products_search_term");
+            if (searchInput) searchInput.value = searchTerm;
+            ProductService.loadProducts(searchTerm ? { search: searchTerm } : {});
+          }
+        });
+
+        app.route({
+          view: "shopping_cart",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+          }
+        });
+
+        app.route({
+          view: "wishlist",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
           }
         });
 
