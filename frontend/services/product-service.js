@@ -370,6 +370,9 @@ openDeleteConfirmationDialog: function (productStr) {
     const productId = localStorage.getItem('selected_product_id');
     if (!productId) return;
 
+    // Log the view
+    ProductService.logProductView(productId);
+
     RestClient.get('products/' + productId, function(product) {
       document.getElementById('flower-name').textContent = product.name;
       document.getElementById('flower-category').textContent = product.category;
@@ -455,5 +458,82 @@ openDeleteConfirmationDialog: function (productStr) {
     ProductService.loadProducts(searchTerm ? { search: searchTerm } : {});
     const searchInput = document.getElementById("navbar-search-input");
     if (searchInput) searchInput.value = searchTerm || "";
+  },
+
+  logProductView: function(productId) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.id) {
+      const payload = {
+        customer_id: user.id,
+        product_id: parseInt(productId)
+      };
+      RestClient.post("product_views/add", payload, function () {
+        console.log("✔ Product view added.");
+      }, function () {
+        console.warn("⚠ Failed to log product view.");
+      });
+    }
+  },
+
+  loadUserProductViews: function () {
+  RestClient.get("product_views", function (data) {
+    Utils.datatable(
+      "productViewsTable",
+      [
+        { data: 'product_name', title: 'Product' },
+        { data: 'time', title: 'Viewed At' },
+        {
+          title: 'Actions',
+          render: function (data, type, row) {
+            return `
+              <div class="text-center">
+                <a href="#flower" class="btn btn-sm btn-outline-dark"
+                   onclick="localStorage.setItem('selected_product_id', ${row.product_id})">
+                  View Product
+                </a>
+              </div>`;
+          }
+        }
+      ],
+      data,
+      5
+    );
+    }, function (xhr, status, error) {
+      console.error("Error loading product views:", error);
+      toastr.error("Failed to load product views.");
+    });
+  },
+
+  loadDashboardSummary: function () {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.id) return;
+
+  // Total Orders
+  RestClient.get("order/count_all", function (res) {
+    document.getElementById("total-orders-count").textContent = res || 0;
+  }, function () {
+    console.warn("Failed to load total orders");
+  });
+
+  // Wishlist Items
+  RestClient.get("wishlist/summary", function (res) {
+    document.getElementById("wishlist-count").textContent = res.total_count || 0;
+  }, function () {
+    console.warn("Failed to load wishlist summary");
+  });
+
+  // Pending Orders
+  RestClient.get("order/count_pending", function (res) {
+    document.getElementById("pending-count").textContent = res || 0;
+  }, function () {
+    console.warn("Failed to load pending orders");
+  });
+
+  // Delivered Orders
+  RestClient.get("order/count_delivered", function (res) {
+      document.getElementById("delivered-count").textContent = res || 0;
+    }, function () {
+      console.warn("Failed to load delivered orders");
+    });
   }
 };

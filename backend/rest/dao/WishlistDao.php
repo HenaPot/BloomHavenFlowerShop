@@ -91,7 +91,7 @@ class WishlistDao extends BaseDao {
     {
         $query = "SELECT 
                     SUM(w.quantity * p.price_each) AS total_value,
-                    SUM(w.quantity) AS total_count
+                    SUM(p.id) AS total_count
                   FROM wishlist w
                   JOIN product p ON w.product_id = p.id
                   WHERE w.user_id = :user_id";

@@ -35,6 +35,8 @@ const Utils = {
           view: "dashboard",
           onReady: function () {
             ProductService.handleNavbarSearch();
+            ProductService.loadUserProductViews(); 
+            ProductService.loadDashboardSummary(); 
           }
         });
 
