@@ -198,14 +198,8 @@
     new DataTable('#itemsTable');
 </script>
 
-<script src="./frontend/services/product-service.js"></script>
-<script src="./frontend/services/order-service.js"></script>
-
 <script>
   $(document).ready(function () {
-    ProductService.init();
-    ProductService.getAllProducts();
-
     FormValidation.validate(
       "#editItemForm",
       {
@@ -242,11 +236,5 @@
       e.preventDefault();
       ProductService.updateProduct();
     });
-  });
-</script>
-
-<script>
-  $(document).ready(function () {
-    OrderService.getAllOrders();
   });
 </script>

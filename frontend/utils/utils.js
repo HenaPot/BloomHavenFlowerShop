@@ -36,7 +36,8 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             ProductService.loadUserProductViews(); 
-            ProductService.loadDashboardSummary(); 
+            ProductService.loadDashboardSummary();
+            OrderService.getUserOrders();
           }
         });
 

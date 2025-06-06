@@ -101,5 +101,26 @@ var OrderService = {
     }
   );
     Utils.unblock_ui("body");
+  },
+
+  getUserOrders: function () {
+    RestClient.get("order/all", function (data) {
+      Utils.datatable(
+        "dashboard_table1",
+        [
+          { data: 'order_id', title: 'Order ID' },
+          { data: 'order_date', title: 'Date' },
+          { data: 'product_names', title: 'Product Name' },
+          { data: 'quantities', title: 'Quantity' },
+          { data: 'total_price', title: 'Total' },
+          { data: 'status_name', title: 'Status' }
+        ],
+        data,
+        5
+      );
+    }, function (xhr, status, error) {
+      console.error('Error fetching user orders:', error);
+      toastr.error("Failed to load your orders.");
+    });
   }
 };
