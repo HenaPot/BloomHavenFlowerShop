@@ -66,12 +66,16 @@ var WishlistService = {
         WishlistService.clearWishlist();
       };
     }
+    WishlistService.loadSummary();
   },
 
   attachQuantityEvents: function () {
     document.querySelectorAll('.quantity-input').forEach(input => {
       input.addEventListener('change', function () {
         if (parseInt(this.value) < 1) this.value = 1;
+        const productId = this.getAttribute('data-product-id');
+        const newQuantity = parseInt(this.value) || 1;
+        WishlistService.updateQuantity(productId, newQuantity);
       });
     });
   },
@@ -111,5 +115,32 @@ addToWishlist: function (productId, quantity = 1) {
   }, function () {
     toastr.error("Failed to add product to wishlist.");
   });
-}
+},
+
+updateQuantity: function (productId, newQuantity) {
+    if (!productId || isNaN(newQuantity) || newQuantity < 1) {
+        toastr.error("Invalid quantity.");
+        return;
+    }
+
+    RestClient.put("wishlist/update", {
+        product_id: parseInt(productId),
+        quantity: parseInt(newQuantity)
+    }, function () {
+        toastr.success("Quantity updated.");
+        WishlistService.getWishlist(); // Refresh total and values
+    }, function () {
+        toastr.error("Failed to update quantity.");
+    });
+},
+
+loadSummary: function () {
+  RestClient.get("wishlist/summary", function (summary) {
+    document.getElementById("wishlist-total-value").textContent = summary.total_value || 0;
+    document.getElementById("wishlist-total-count").textContent = summary.total_count || 0;
+  }, function () {
+    document.getElementById("wishlist-total-value").textContent = 0;
+    document.getElementById("wishlist-total-count").textContent = 0;
+  });
+},
 };
