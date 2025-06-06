@@ -66,6 +66,13 @@ var WishlistService = {
         WishlistService.clearWishlist();
       };
     }
+    const addAllBtn = document.getElementById("addAllToCartBtn");
+    if (addAllBtn) {
+      addAllBtn.onclick = function () {
+        WishlistService.addAllToCart();
+        WishlistService.clearWishlist();
+      };
+    }
     WishlistService.loadSummary();
   },
 
@@ -144,5 +151,20 @@ var WishlistService = {
       document.getElementById("wishlist-total-value").textContent = 0;
       document.getElementById("wishlist-total-count").textContent = 0;
     });
+  },
+
+  addAllToCart: function () {
+    // Add all wishlist items to cart
+    WishlistService.data.forEach(item => {
+      RestClient.post("cart/add", {
+        product_id: item.product_id,
+        quantity: item.cart_quantity || 1
+      }, function () {
+        // Optionally show a success message for each item
+      }, function () {
+        toastr.error(`Failed to add ${item.name} to cart.`);
+      });
+    });
+    toastr.success("All wishlist items added to cart!");
   },
 };

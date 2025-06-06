@@ -12,13 +12,12 @@ class ShoppingCartService {
         $this->productDao = new ProductDao();
     }
 
-    public function add_to_cart($user_id, $product_id)
+    public function add_to_cart($user_id, $product_id, $quantity = 1)
     {
         if (empty($user_id)) return "Server error";
         if (empty($product_id)) return "Invalid input";
 
-        
-        return $this->shoppingCartDao->add_to_cart($user_id, $product_id);
+        return $this->shoppingCartDao->add_to_cart($user_id, $product_id, $quantity);
     }
 
     public function remove_from_cart($user_id, $product_id)

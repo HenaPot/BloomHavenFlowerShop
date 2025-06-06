@@ -7,7 +7,7 @@ class ShoppingCartDao extends BaseDao {
         parent::__construct('cart');
     }
 
-    public function add_to_cart($user_id, $product_id)
+    public function add_to_cart($user_id, $product_id, $quantity = 1)
     {
         $cart_item = $this->query_unique(
             "SELECT * FROM cart WHERE user_id = :user_id AND product_id = :product_id",
@@ -15,17 +15,19 @@ class ShoppingCartDao extends BaseDao {
         );
 
         if ($cart_item) {
-            // Increase quantity by 1
-            $new_quantity = $cart_item['quantity'] + 1;
+            // Dodaj na postojeću količinu
+            $new_quantity = $cart_item['quantity'] + $quantity;
             $this->update_quantity($user_id, $product_id, $new_quantity);
         } else {
-            // Insert new item
+            // Unesi novi proizvod u korpu
             $this->insert("cart", [
                 "user_id" => $user_id,
                 "product_id" => $product_id,
-                "quantity" => 1
+                "quantity" => $quantity
             ]);
         }
+
+        return ["status" => "success", "message" => "Item added to cart"];
     }
 
     public function remove_from_cart($user_id, $product_id)

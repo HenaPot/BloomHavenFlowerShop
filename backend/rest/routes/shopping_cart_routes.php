@@ -199,9 +199,12 @@ Flight::group('/cart', function () {
         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
         $user_id = Flight::get('user')->id;
         $data = Flight::request()->data->getData();
-        $result = Flight::get('cart_service')->add_to_cart($user_id, $data['product_id']);
-        ResponseHelper::handleServiceResponse($result, 'Item added to cart');
 
+        $product_id = $data['product_id'] ?? null;
+        $quantity = $data['quantity'] ?? 1;
+
+        $result = Flight::get('cart_service')->add_to_cart($user_id, $product_id, $quantity);
+        ResponseHelper::handleServiceResponse($result, 'Item added to cart');
     });
 
     /**
