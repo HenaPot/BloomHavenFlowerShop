@@ -21,7 +21,6 @@ var WishlistService = {
     }
 
     items.forEach(item => {
-        console.log(item);
       const imageUrl = (item.images && item.images.length > 0)
         ? 'backend/' + item.images[0].image
         : 'frontend/assets/images/kvalitetno_cvijece.webp';
@@ -49,7 +48,7 @@ var WishlistService = {
                 <button class="btn btn-success mb-2 w-100 add-to-cart-btn" data-product-id="${item.product_id}">
                   <i class="bi bi-cart-plus"></i> Add to Cart
                 </button>
-                <button class="btn btn-outline-danger w-100 mb-2 remove-from-wishlist-btn" data-product-id="${item.product_id}">
+                <button class="btn btn-outline-danger w-100 mb-2 remove-from-wishlist-btn" onclick="WishlistService.removeItemFromWishlist(${item.product_id})">
                   <i class="bi bi-trash"></i> Remove
                 </button>
               </div>
@@ -61,8 +60,6 @@ var WishlistService = {
     });
 
     WishlistService.attachQuantityEvents();
-    WishlistService.attachActionEvents();
-
     const clearBtn = document.getElementById("clearWishlistBtn");
     if (clearBtn) {
       clearBtn.onclick = function () {
@@ -79,24 +76,6 @@ var WishlistService = {
     });
   },
 
-  attachActionEvents: function () {
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-      button.addEventListener('click', function () {
-        const productId = this.getAttribute('data-product-id');
-        // Implement add to cart logic here
-        toastr.success("Added to cart!");
-      });
-    });
-
-    document.querySelectorAll('.remove-from-wishlist-btn').forEach(button => {
-      button.addEventListener('click', function () {
-        const productId = this.getAttribute('data-product-id');
-        // Implement remove from wishlist logic here
-        toastr.info("Removed from wishlist!");
-      });
-    });
-  },
-  
   clearWishlist: function () {
     if (!confirm("Are you sure you want to clear your wishlist?")) return;
 
@@ -106,5 +85,31 @@ var WishlistService = {
     }, function () {
       toastr.error("Failed to clear wishlist.");
     });
+  },
+
+  removeItemFromWishlist: function (productId) {
+  if (!productId) return;
+
+  if (!confirm("Remove this item from your wishlist?")) return;
+
+  RestClient.delete(`wishlist/remove/${productId}`, {}, function () {
+    toastr.success("Item removed from wishlist.");
+    WishlistService.getWishlist(); 
+  }, function () {
+    toastr.error("Failed to remove item.");
+  });
+},
+
+addToWishlist: function (productId, quantity = 1) {
+  if (!productId) {
+    toastr.error("No product selected.");
+    return;
   }
+
+  RestClient.post("wishlist/add", { product_id: productId, quantity: quantity }, function () {
+    toastr.success("Product added to wishlist.");
+  }, function () {
+    toastr.error("Failed to add product to wishlist.");
+  });
+}
 };

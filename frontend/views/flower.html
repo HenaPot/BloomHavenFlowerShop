@@ -11,7 +11,18 @@
       <p><strong>Category:</strong> <span id="flower-category"></span></p>
       <p><strong>Price:</strong> <span id="flower-price" style="font-size:2.2rem;font-weight:bold;"></span></p>
       <p id="flower-description" style="font-size:1.4rem;"></p>
-      <p><strong>Quantity:</strong> <span id="flower-quantity"></span></p>
+      <div class="mb-2">
+        <label for="flower-quantity-input" class="form-label"><strong>Quantity:</strong></label>
+        <input type="number" id="flower-quantity-input" class="form-control" value="1" min="1" style="width: 100px; display: inline-block;">
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button id="addToCartBtn" class="btn btn-success flex-fill">
+          <i class="bi bi-cart-plus"></i> Add to Cart
+        </button>
+        <button id="addToWishlistBtn" class="btn btn-outline-success flex-fill">
+          <i class="bi bi-heart"></i> Add to Wishlist
+        </button>
+      </div>
     </div>
   </div>
 </section>

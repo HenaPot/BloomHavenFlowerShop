@@ -217,9 +217,7 @@ var UserService = {
   RestClient.put(
     "users/update",
     data,
-    function (response) {
-      console.log("Profile info updated.");
-      
+    function (response) {      
       const fileInput = document.getElementById("profile_picture");
       const imageFile = fileInput.files[0];
 

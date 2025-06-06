@@ -377,7 +377,6 @@ openDeleteConfirmationDialog: function (productStr) {
       document.getElementById('flower-name').textContent = product.name;
       document.getElementById('flower-category').textContent = product.category;
       document.getElementById('flower-price').textContent = "$" + product.price_each;
-      document.getElementById('flower-quantity').textContent = product.quantity;
       document.getElementById('flower-description').textContent = product.description;
 
       // Images
@@ -386,10 +385,7 @@ openDeleteConfirmationDialog: function (productStr) {
       thumbnails.innerHTML = "";
 
       if (product.images && product.images.length > 0) {
-        // Set main image to the first image
         mainImage.src = 'backend/' + product.images[0].image;
-
-        // Render all thumbnails
         product.images.forEach((img, idx) => {
           const thumb = document.createElement('img');
           thumb.src = 'backend/' + img.image;
@@ -405,6 +401,24 @@ openDeleteConfirmationDialog: function (productStr) {
         });
       } else {
         mainImage.src = 'frontend/assets/images/kvalitetno_cvijece.webp';
+      }
+
+      // Attach event listeners for Add to Wishlist and Add to Cart
+      const wishlistBtn = document.getElementById("addToWishlistBtn");
+      if (wishlistBtn) {
+        wishlistBtn.onclick = function () {
+          const quantity = parseInt(document.getElementById("flower-quantity-input").value) || 1;
+          WishlistService.addToWishlist(productId, quantity);
+        };
+      }
+
+      const cartBtn = document.getElementById("addToCartBtn");
+      if (cartBtn) {
+        cartBtn.onclick = function () {
+          const quantity = parseInt(document.getElementById("flower-quantity-input").value) || 1;
+          // CartService.addToCart(productId, quantity); // Uncomment if you have CartService
+          toastr.success("Added to cart!");
+        };
       }
     });
   },
