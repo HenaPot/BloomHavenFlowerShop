@@ -1,184 +1,71 @@
-<section>
-    <div class="container py-4" >
-        <!-- Header Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">My Wishlist</h2>
-                </div>
+<section class="h-100 h-custom" style="background-color: #eee;">
+  <div class="container py-5 h-100">
+    <h2 class="fw-bold mb-5">My Wishlist</h2>
+    <div class="row">
+      <div class="col-12">
+        <!-- Summary and actions -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="card border-success h-100">
+              <div class="card-body">
+                <h5 class="card-title">Total Value</h5>
+                <h3 class="card-text">$789.95</h3>
+                <small class="text-muted">5 items in wishlist</small>
+              </div>
             </div>
-        </div>
-    
-    <!-- Summary Cards -->
-    <div class="row mb-4">
-        <!-- Left card -->
-        <div class="col-md-6 mb-3">
-            <div class="card h-100 border-success">
-                <div class="card-body">
-                    <h5 class="card-title">Total Value</h5>
-                    <h3 class="card-text">$789.95</h3>
-                    <small class="text-muted">5 items in wishlist</small>
-                </div>
-            </div>
-        </div>
-    
-    <!-- Quick Actions Card -->
-    <div class="col-md-6 mb-3">
-        <div class="card h-100 border-success" >
-            <div class="card-body">
+          </div>
+          <div class="col-md-6">
+            <div class="card border-success h-100">
+              <div class="card-body">
                 <h5 class="card-title">Quick Actions</h5>
-                <!-- Flexbox container for buttons -->
-                <div class="d-flex gap-2 mt-3">
-                    <button class="btn btn-sm btn-success flex-grow-1">
-                        Add All to Cart
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger flex-grow-1">
-                        Clear Wishlist
-                    </button>
+                <div class="d-flex flex-column flex-md-row gap-2 mt-3">
+                  <button class="btn btn-sm btn-success flex-fill">
+                    Add All to Cart
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger flex-fill" id="clearWishlistBtn">
+                    Clear Wishlist
+                  </button>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+        <!-- Wishlist items -->
+        <div id="wishlistItems">
+          <!-- Example Item -->
+          <div class="card mb-3 border-success">
+            <div class="card-body">
+              <div class="row align-items-center g-2">
+                <div class="col-3 col-md-2">
+                  <img src="./frontend/assets/images/buket.jpg" class="img-fluid rounded" style="width: 65px;">
+                </div>
+                <div class="col-9 col-md-5">
+                  <h5 class="card-title mb-1">Rose Bouquet</h5>
+                  <div class="mb-2">
+                    <span class="fw-bold">$999.99</span>
+                  </div>
+                </div>
+                <div class="col-6 col-md-2 d-flex flex-column justify-content-center align-items-center">
+                  <label class="form-label d-none d-md-block">Quantity</label>
+                  <div class="input-group">
+                    <input type="number" class="form-control text-center quantity-input" value="1" min="1">
+                  </div>
+                </div>
+                <div class="col-6 col-md-3 d-flex flex-column justify-content-center align-items-center">
+                  <button class="btn btn-success mb-2 w-100">
+                    <i class="bi bi-cart-plus"></i> Add to Cart
+                  </button>
+                  <button class="btn btn-outline-danger w-100 mb-2">
+                    <i class="bi bi-trash"></i> Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Repeat for more items -->
+        </div>
+      </div>
     </div>
-        <!-- Filter and Sort -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-3 mb-md-0">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search in wishlist...">
-                                    <button class="btn btn-outline-secondary" type="button">Search</button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-md-end">
-                                    <select class="form-select w-auto">
-                                        <option selected>Sort by</option>
-                                        <option>Price: Low to High</option>
-                                        <option>Price: High to Low</option>
-                                        <option>Name: A to Z</option>
-                                        <option>Date Added</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  </div>
+</section>
 
-        <!-- Wishlist Items -->
-        <div class="row" id="wishlistItems">
-            <!-- Item 1 -->
-            <div class="col-12 mb-3 border-success">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 col-sm-4 mb-3 mb-md-0">
-                                <img src= "./frontend/assets/images/buket.jpg" class="img-fluid rounded" style="width: 65px;">
-                            </div>
-                            <div class="col-md-4 col-sm-8 mb-3 mb-md-0">
-                                <h5 class="card-title">Rose Bouquet</h5>
-                                <div class="mb-2">
-                                    <span class="fw-bold">$999.99</span>
-                                </div>
-
-                                <!-- <small class="text-muted">Added on: Jan 15, 2024</small> -->
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
-                                <label class="form-label">Quantity</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-center quantity-input" value="1" min="1">
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6">
-                                <button class="btn btn-success mb-2 w-100">
-                                    <i class="bi bi-cart-plus"></i> Add to Cart
-                                </button>
-                                <button class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-trash"></i> Remove
-                                </button>
-                                <button class="btn btn-link btn-sm w-100 text-muted">
-                                    <i class="bi bi-share"></i> Share
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="col-12 mb-3">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 col-sm-4 mb-3 mb-md-0">
-                                <img src= "./frontend/assets/images/buket.jpg" class="img-fluid rounded" style="width: 65px;">
-                            </div>
-                            <div class="col-md-4 col-sm-8 mb-3 mb-md-0">
-                                <h5 class="card-title">Rose Bouquet</h5>
-                                <div class="mb-2">
-                                    <span class="fw-bold">$299.99</span>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
-                                <label class="form-label">Quantity</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-center quantity-input" value="1" min="1">
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6">
-                                <button class="btn btn-success mb-2 w-100">
-                                    <i class="bi bi-cart-plus"></i> Add to Cart
-                                </button>
-                                <button class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-trash"></i> Remove
-                                </button>
-                                <button class="btn btn-link btn-sm w-100 text-muted">
-                                    <i class="bi bi-share"></i> Share
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="col-12 mb-3">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 col-sm-4 mb-3 mb-md-0">
-                                <img src= "./frontend/assets/images/buket.jpg" class="img-fluid rounded" style="width: 65px;">
-                            </div>
-                            <div class="col-md-4 col-sm-8 mb-3 mb-md-0">
-                                <h5 class="card-title">Rose Bouquet</h5>
-                                <div class="mb-2">
-                                    <span class="fw-bold">$129.99</span>
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6 mb-3 mb-md-0">
-                                <label class="form-label">Quantity</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control text-center quantity-input" value="1" min="1">
-                                </div>
-                            </div>
-                            <div class="col-md-3 col-sm-6">
-                                <button class="btn btn-success mb-2 w-100">
-                                    <i class="bi bi-cart-plus"></i> Add to Cart
-                                </button>
-                                <button class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-trash"></i> Remove
-                                </button>
-                                <button class="btn btn-link btn-sm w-100 text-muted">
-                                    <i class="bi bi-share"></i> Share
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </section>

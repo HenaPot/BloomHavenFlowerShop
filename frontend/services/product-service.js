@@ -468,7 +468,6 @@ openDeleteConfirmationDialog: function (productStr) {
         product_id: parseInt(productId)
       };
       RestClient.post("product_views/add", payload, function () {
-        console.log("✔ Product view added.");
       }, function () {
         console.warn("⚠ Failed to log product view.");
       });

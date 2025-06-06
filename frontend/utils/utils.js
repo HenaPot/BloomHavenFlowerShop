@@ -65,6 +65,7 @@ const Utils = {
           view: "wishlist",
           onReady: function () {
             ProductService.handleNavbarSearch();
+            WishlistService.getWishlist();
           }
         });
 

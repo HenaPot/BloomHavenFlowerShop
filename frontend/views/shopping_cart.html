@@ -1,66 +1,41 @@
 <section class="h-100 h-custom" style="background-color: #eee;">
     <div class="container py-5 h-100">
       <h2 class="fw-bold mb-5">Shopping Cart</h2>
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col">
+      <div class="row d-flex justify-content-center align-items-start h-100">
+        <!-- Left side: Top cards and item cards -->
+        <div class="col-lg-7">
           <div class="row mb-4">
-            <!-- Left card -->
+            <!-- Total Value Card -->
             <div class="col-md-6 mb-3">
-                <div class="card h-100 border-success">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Value</h5>
-                        <h3 class="card-text">$789.95</h3>
-                        <small class="text-muted">5 items in cart</small>
-                    </div>
-                </div>
-            </div>
-        <!-- Quick Actions Card -->
-        <div class="col-md-6 mb-3">
-            <div class="card h-100 border-success">
+              <div class="card h-100 border-success">
                 <div class="card-body">
-                    <h5 class="card-title">Quick Actions</h5>
-                    <!-- Flexbox container for buttons -->
-                    <div class="d-flex gap-2 mt-3">
-                        <button class="btn btn-sm btn-success flex-grow-1">
-                            Add All to Wishlist
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger flex-grow-1">
-                            Clear Cart
-                        </button>
-                    </div>
+                  <h5 class="card-title">Total Value</h5>
+                  <h3 class="card-text">$789.95</h3>
+                  <small class="text-muted">5 items in cart</small>
                 </div>
+              </div>
             </div>
-        </div>
-        <!-- Filter and Sort -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search in cart...">
-                                    <button class="btn btn-outline-secondary" type="button">Search</button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-md-end">
-                                    <select class="form-select w-auto">
-                                        <option selected>Sort by</option>
-                                        <option>Price: Low to High</option>
-                                        <option>Price: High to Low</option>
-                                        <option>Name: A to Z</option>
-                                        <option>Date Added</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Quick Actions Card -->
+            <div class="col-md-6 mb-3">
+              <div class="card h-100 border-success">
+                <div class="card-body">
+                  <h5 class="card-title">Quick Actions</h5>
+                  <!-- Flexbox container for buttons -->
+                  <div class="d-flex gap-2 mt-3">
+                    <button class="btn btn-sm btn-success flex-grow-1">
+                      Add All to Wishlist
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger flex-grow-1">
+                      Clear Cart
+                    </button>
+                  </div>
                 </div>
+              </div>
             </div>
-        </div>
+          </div>
+          <!-- Item cards (keep as-is, but now they align with the top cards) -->
           <div class="row">
-            <div class="col-lg-7">
+            <div class="col-12">
               <div class="card mb-3 border-success">
                 <div class="card-body">
                   <div class="d-flex justify-content-between">
@@ -165,13 +140,16 @@
               </div>
 
             </div>
-            <div class="col-lg-5">
-              <div class="card bg-success text-white rounded-3">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="mb-0">Purchase details</h5>
-                    <i class="fa-solid fa-credit-card"></i>
-                  </div>
+          </div>
+        </div>
+        <!-- Right side: Purchase details -->
+        <div class="col-lg-5">
+          <div class="card bg-success text-white rounded-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Purchase details</h5>
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
               <form id="purchase_form">
                 <div class="row">
                   <!-- Name input -->
@@ -220,15 +198,13 @@
                 </div>
               
                 <div class="d-flex justify-content-center mt-4">
-                  <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg">
+                  <button type="button" class="btn btn-dark btn-lg">
                     <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
                   </button>
                 </div>
             </form>
             </div>
           </div>
-          </div>
-        </div>
         </div>
       </div>
     </div>
