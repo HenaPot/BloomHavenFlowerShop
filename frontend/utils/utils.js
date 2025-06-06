@@ -58,6 +58,7 @@ const Utils = {
           view: "shopping_cart",
           onReady: function () {
             ProductService.handleNavbarSearch();
+            CartService.getCart();
           }
         });
 

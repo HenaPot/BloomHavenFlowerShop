@@ -1,12 +1,15 @@
 <?php
 require_once __DIR__ . "/../dao/ShoppingCartDao.php";
+require_once __DIR__ . "/../dao/ProductDao.php";
 
 class ShoppingCartService {
     private $shoppingCartDao;
+    private $productDao;
 
     public function __construct()
     {
         $this->shoppingCartDao = new shoppingCartDao();
+        $this->productDao = new ProductDao();
     }
 
     public function add_to_cart($user_id, $product_id)
@@ -45,7 +48,13 @@ class ShoppingCartService {
     {
         if (empty($user_id)) return "Server error";
 
-        return $this->shoppingCartDao->get_cart_by_user($user_id, $search, $sort_by, $sort_order);
+        $cart = $this->shoppingCartDao->get_cart_by_user($user_id, $search, $sort_by, $sort_order);
+
+        foreach ($cart as &$item) {
+            $item['images'] = $this->productDao->get_images_by_product_id($item['product_id']);
+        }
+
+        return $cart;
     }
 
     public function clear_cart($user_id)
