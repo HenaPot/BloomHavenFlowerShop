@@ -57,6 +57,12 @@ var CartService = {
     });
 
     CartService.attachEvents();
+    const clearBtn = document.getElementById("clearCartBtn");
+    if (clearBtn) {
+      clearBtn.onclick = function () {
+        CartService.clearCart();
+      };
+    }
     CartService.loadSummary();
   },
 
@@ -97,6 +103,7 @@ var CartService = {
     RestClient.delete(`cart/remove/${productId}`, {}, function () {
       toastr.success("Item removed.");
       CartService.getCart();
+      CartService.loadSummary();
     }, function () {
       toastr.error("Failed to remove item.");
     });
@@ -111,4 +118,22 @@ var CartService = {
       document.getElementById("cart-total-count").textContent = 0;
     });
   },
+
+  clearCart: function () {
+    if (!confirm("Are you sure you want to clear your cart?")) return;
+    RestClient.delete("cart/clear", {}, function () {
+      toastr.success("Cart cleared.");
+      CartService.getCart();
+      CartService.loadSummary();
+    }, function () {
+      toastr.error("Failed to clear cart.");
+    });
+  },
 };
+
+const clearBtn = document.getElementById("clearCartBtn");
+if (clearBtn) {
+  clearBtn.onclick = function () {
+    CartService.clearCart();
+  };
+}

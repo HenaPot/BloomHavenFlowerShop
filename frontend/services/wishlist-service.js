@@ -85,62 +85,64 @@ var WishlistService = {
 
     RestClient.delete("wishlist/clear", {}, function () {
       toastr.success("Wishlist cleared successfully.");
-      WishlistService.getWishlist(); // refresh after clear
+      WishlistService.getWishlist();
+      WishlistService.loadSummary(); 
     }, function () {
       toastr.error("Failed to clear wishlist.");
     });
   },
 
   removeItemFromWishlist: function (productId) {
-  if (!productId) return;
+    if (!productId) return;
 
-  if (!confirm("Remove this item from your wishlist?")) return;
+    if (!confirm("Remove this item from your wishlist?")) return;
 
-  RestClient.delete(`wishlist/remove/${productId}`, {}, function () {
-    toastr.success("Item removed from wishlist.");
-    WishlistService.getWishlist(); 
-  }, function () {
-    toastr.error("Failed to remove item.");
-  });
-},
+    RestClient.delete(`wishlist/remove/${productId}`, {}, function () {
+      toastr.success("Item removed from wishlist.");
+      WishlistService.getWishlist();
+      WishlistService.loadSummary(); // <-- Add this line
+    }, function () {
+      toastr.error("Failed to remove item.");
+    });
+  },
 
-addToWishlist: function (productId, quantity = 1) {
-  if (!productId) {
-    toastr.error("No product selected.");
-    return;
-  }
+  addToWishlist: function (productId, quantity = 1) {
+    if (!productId) {
+      toastr.error("No product selected.");
+      return;
+    }
 
-  RestClient.post("wishlist/add", { product_id: productId, quantity: quantity }, function () {
-    toastr.success("Product added to wishlist.");
-  }, function () {
-    toastr.error("Failed to add product to wishlist.");
-  });
-},
+    RestClient.post("wishlist/add", { product_id: productId, quantity: quantity }, function () {
+      toastr.success("Product added to wishlist.");
+    }, function () {
+      toastr.error("Failed to add product to wishlist.");
+    });
+  },
 
-updateQuantity: function (productId, newQuantity) {
+  updateQuantity: function (productId, newQuantity) {
     if (!productId || isNaN(newQuantity) || newQuantity < 1) {
-        toastr.error("Invalid quantity.");
-        return;
+      toastr.error("Invalid quantity.");
+      return;
     }
 
     RestClient.put("wishlist/update", {
-        product_id: parseInt(productId),
-        quantity: parseInt(newQuantity)
+      product_id: parseInt(productId),
+      quantity: parseInt(newQuantity)
     }, function () {
-        toastr.success("Quantity updated.");
-        WishlistService.getWishlist(); // Refresh total and values
+      toastr.success("Quantity updated.");
+      WishlistService.getWishlist(); // Refresh total and values
     }, function () {
-        toastr.error("Failed to update quantity.");
+      toastr.error("Failed to update quantity.");
     });
-},
+  },
 
-loadSummary: function () {
-  RestClient.get("wishlist/summary", function (summary) {
-    document.getElementById("wishlist-total-value").textContent = summary.total_value || 0;
-    document.getElementById("wishlist-total-count").textContent = summary.total_count || 0;
-  }, function () {
-    document.getElementById("wishlist-total-value").textContent = 0;
-    document.getElementById("wishlist-total-count").textContent = 0;
-  });
-},
+  loadSummary: function () {
+    RestClient.get("wishlist/summary", function (summary) {
+      document.getElementById("wishlist-total-value").textContent = summary.total_value || 0;
+      document.getElementById("wishlist-total-count").textContent = summary.total_count || 0;
+    }, function () {
+      document.getElementById("wishlist-total-value").textContent = 0;
+      document.getElementById("wishlist-total-count").textContent = 0;
+    });
+  },
 };
