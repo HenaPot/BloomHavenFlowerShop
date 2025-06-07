@@ -57,12 +57,40 @@ var CartService = {
     });
 
     CartService.attachEvents();
+
+    // Attach checkout button handler (SPA-safe)
+    const checkoutBtn = document.getElementById("checkoutBtn");
+    if (checkoutBtn) {
+      checkoutBtn.onclick = function () {
+        const form = document.getElementById("purchase_form");
+        if (!form) return toastr.error("Checkout form not found.");
+
+        const data = {
+          name: form.name.value,
+          surname: form.surname.value,
+          address: form.address.value,
+          city: form.city.value,
+          country: form.country.value,
+          phone_number: form.phone_number.value
+        };
+
+        RestClient.post("order/add", data, function (orderResponse) {
+          toastr.success(orderResponse.message || "Purchase made successfully!");
+          CartService.clearCart();
+        }, function () {
+          toastr.error("Failed to create order.");
+        });
+      };
+    }
+
+    // Attach clear cart button handler
     const clearBtn = document.getElementById("clearCartBtn");
     if (clearBtn) {
       clearBtn.onclick = function () {
         CartService.clearCart();
       };
     }
+
     CartService.loadSummary();
   },
 
