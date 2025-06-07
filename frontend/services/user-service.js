@@ -249,4 +249,24 @@ var UserService = {
       toastr.error(msg);
     });
   },
+
+  updateDashboardLink: function () {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const dashboardLink = document.querySelector("#nav-dashboard");
+    if (!dashboardLink) return;
+
+    if (user && user.role_id == 1) {
+      dashboardLink.setAttribute("href", "#admin_dashboard");
+      dashboardLink.innerHTML = `
+        <i class="fa-solid fa-screwdriver-wrench fa-lg my-2"></i>
+        <span class="small">Admin Dashboard</span>
+      `;
+    } else {
+      dashboardLink.setAttribute("href", "#dashboard");
+      dashboardLink.innerHTML = `
+        <i class="fa-solid fa-house fa-lg my-2"></i>
+        <span class="small">Dashboard</span>
+      `;
+    }
+  },
 };

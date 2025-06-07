@@ -10,6 +10,7 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             UserService.getUserData();
+            UserService.updateDashboardLink();
           }
         });
 
@@ -18,6 +19,7 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             ProductService.renderProductDetails();
+            UserService.updateDashboardLink();
           }
         });
 
@@ -28,6 +30,7 @@ const Utils = {
             ProductService.init();
             ProductService.getAllProducts();
             OrderService.getAllOrders();
+            UserService.updateDashboardLink();
           }
         });
 
@@ -38,6 +41,7 @@ const Utils = {
             ProductService.loadUserProductViews(); 
             ProductService.loadDashboardSummary();
             OrderService.getUserOrders();
+            UserService.updateDashboardLink();
           }
         });
 
@@ -46,6 +50,7 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             ProductService.renderCategoryCheckboxes();
+            UserService.updateDashboardLink();
             const searchInput = document.getElementById("navbar-search-input");
             const searchTerm = localStorage.getItem("products_search_term") || "";
             localStorage.removeItem("products_search_term");
@@ -59,6 +64,7 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             CartService.getCart();
+            UserService.updateDashboardLink();
           }
         });
 
@@ -67,6 +73,7 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             WishlistService.getWishlist();
+            UserService.updateDashboardLink();
           }
         });
 

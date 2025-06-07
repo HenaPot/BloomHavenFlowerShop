@@ -105,21 +105,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  if (user && user.role_id == 1) {
-    const dashboardLink = document.querySelector("#nav-dashboard");
-    if (dashboardLink) {
-      dashboardLink.setAttribute("href", "#admin_dashboard");
-      dashboardLink.innerHTML = `
-        <i class="fa-solid fa-screwdriver-wrench fa-lg my-2"></i>
-        <span class="small">Admin Dashboard</span>
-      `;
-    }
-  }
-});
-
 $(document).on('change', '.order-status-dropdown', function () {
   const orderId = $(this).data('order-id');
   const newStatusId = $(this).val();

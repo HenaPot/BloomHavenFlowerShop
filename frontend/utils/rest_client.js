@@ -57,8 +57,10 @@ var RestClient = {
   handleErrorResponse: function(jqXHR) {
     if (jqXHR.status === 401) {
       window.location.hash = "#unauthorized"; // Navigate to 401.html section
+    } else if (jqXHR.status === 403) {
+      window.location.hash = "#forbidden"; // Navigate to 403.html section
     } else {
-      toastr.error(jqXHR.responseJSON.message);
+      toastr.error(jqXHR.responseJSON && jqXHR.responseJSON.message ? jqXHR.responseJSON.message : "An error occurred.");
     }
   },
   uploadFile: function (url, formData, callback, error_callback) {
