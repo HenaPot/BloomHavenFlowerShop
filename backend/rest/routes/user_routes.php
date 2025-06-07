@@ -100,11 +100,31 @@ Flight::group('/users', function() {
      *     )
      * )
      */
-    Flight::route('PUT /update', function() {
+    Flight::route('PUT /update', function () {
         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
         $current_user_id = Flight::get('user')->id;
         $data = Flight::request()->data->getData();
-        
+
+        if (isset($data['email'])) {
+            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+                Flight::halt(400, "Invalid email format.");
+            }
+        }
+
+        $string_fields = ['name', 'username', 'address'];
+        foreach ($string_fields as $field) {
+            if (isset($data[$field]) && trim($data[$field]) === '') {
+                Flight::halt(400, "Field '$field' cannot be empty.");
+            }
+        }
+
+        if (isset($data['date_of_birth'])) {
+            $date = DateTime::createFromFormat('Y-m-d', $data['date_of_birth']);
+            if (!$date || $date->format('Y-m-d') !== $data['date_of_birth']) {
+                Flight::halt(400, "Invalid date format for 'date_of_birth'. Expected YYYY-MM-DD.");
+            }
+        }
+
         $user = Flight::get('user_service')->update_user($current_user_id, $data);
         ResponseHelper::handleServiceResponse($user);
     });
