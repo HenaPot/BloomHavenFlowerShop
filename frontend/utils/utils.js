@@ -9,6 +9,7 @@ const Utils = {
           view: "profile",
           onReady: function () {
             ProductService.handleNavbarSearch();
+            UserService.init();
             UserService.getUserData();
             UserService.updateDashboardLink();
           }
@@ -65,6 +66,7 @@ const Utils = {
             ProductService.handleNavbarSearch();
             CartService.getCart();
             UserService.updateDashboardLink();
+            CartService.initPurchaseFormValidation();
           }
         });
 

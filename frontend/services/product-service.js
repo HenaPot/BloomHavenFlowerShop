@@ -1,5 +1,6 @@
 var ProductService = {
   init: function () {
+    ProductService.initProductFormsValidation();
     ProductService.loadCategories();
     ProductService.handleNavbarSearch();
     
@@ -19,6 +20,10 @@ var ProductService = {
         });
       }
     });
+    ProductService.initProductFormsValidation();
+  },
+
+  initProductFormsValidation: function () {
     FormValidation.validate(
       "#addItemForm",
       {
@@ -50,6 +55,40 @@ var ProductService = {
         }
       },
       ProductService.addProduct
+    );
+
+    // Edit Product Form
+    FormValidation.validate(
+      "#editItemForm",
+      {
+        name: "required",
+        category_id: "required",
+        quantity: {
+          required: true,
+          digits: true,
+          min: 1
+        },
+        price_each: {
+          required: true,
+          number: true,
+          min: 0.01
+        }
+      },
+      {
+        name: "Please enter the product name.",
+        category_id: "Please enter the product category.",
+        quantity: {
+          required: "Please enter the quantity.",
+          digits: "Quantity must be a whole number.",
+          min: "Quantity must be at least 1."
+        },
+        price_each: {
+          required: "Please enter the price.",
+          number: "Price must be a valid number.",
+          min: "Price must be at least 0.01."
+        }
+      },
+      ProductService.updateProduct
     );
   },
 
@@ -428,6 +467,22 @@ openDeleteConfirmationDialog: function (productStr) {
           });
         }
       }
+
+      // Attach quantity input validation
+      const quantityInput = document.getElementById('flower-quantity-input');
+      if (quantityInput) {
+        quantityInput.addEventListener('change', function () {
+          let val = parseInt(this.value);
+          if (isNaN(val) || val < 1) {
+            this.value = 1;
+            toastr.warning("Quantity must be a positive number.");
+          }
+          this.value = Math.floor(this.value);
+        });
+        quantityInput.addEventListener('input', function () {
+          this.value = this.value.replace(/[^0-9]/g, '');
+        });
+      }
     });
   },
   handleNavbarSearch: function () {
@@ -442,9 +497,16 @@ openDeleteConfirmationDialog: function (productStr) {
     function doSearch() {
       const searchTerm = searchInput.value.trim();
 
+      // Validation: require at least 2 characters
+      if (searchTerm.length < 2) {
+        toastr.error("Search term must be at least 2 characters.");
+        searchInput.focus();
+        return;
+      }
+
       if (window.location.hash === "#products") {
         ProductService.renderCategoryCheckboxes();
-        ProductService.loadProducts(searchTerm ? { search: searchTerm } : {});
+        ProductService.loadProducts({ search: searchTerm });
       } else {
         localStorage.setItem("products_search_term", searchTerm);
         window.location.hash = "#products";
@@ -454,6 +516,7 @@ openDeleteConfirmationDialog: function (productStr) {
     searchBtn.onclick = doSearch;
     searchInput.onkeydown = function (e) {
       if (e.key === "Enter") {
+        e.preventDefault();
         doSearch();
       }
     };

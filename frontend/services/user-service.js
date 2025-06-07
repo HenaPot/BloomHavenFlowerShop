@@ -76,6 +76,31 @@ var UserService = {
       },
       UserService.signup
     );
+
+    FormValidation.validate(
+      "#edit_profile_form",
+      {
+        edit_username: "required",
+        edit_name: "required",
+        edit_email: {
+          required: true,
+          email: true,
+        },
+        edit_date_of_birth: "required",
+        edit_address: "required",
+      },
+      {
+        edit_username: "Please enter your username.",
+        edit_name: "Please enter your full name.",
+        edit_email: {
+          required: "Please enter your email address.",
+          email: "Please enter a valid email address.",
+        },
+        edit_date_of_birth: "Please enter your date of birth.",
+        edit_address: "Please enter your address.",
+      },
+      UserService.editProfile
+    );
   },
 
   login: function (data) {

@@ -58,29 +58,29 @@ var CartService = {
 
     CartService.attachEvents();
 
-    const checkoutBtn = document.getElementById("checkoutBtn");
-    if (checkoutBtn) {
-      checkoutBtn.onclick = function () {
-        const form = document.getElementById("purchase_form");
-        if (!form) return toastr.error("Checkout form not found.");
+    // const checkoutBtn = document.getElementById("checkoutBtn");
+    // if (checkoutBtn) {
+    //   checkoutBtn.onclick = function () {
+    //     const form = document.getElementById("purchase_form");
+    //     if (!form) return toastr.error("Checkout form not found.");
 
-        const data = {
-          name: form.name.value,
-          surname: form.surname.value,
-          address: form.address.value,
-          city: form.city.value,
-          country: form.country.value,
-          phone_number: form.phone_number.value
-        };
+    //     const data = {
+    //       name: form.name.value,
+    //       surname: form.surname.value,
+    //       address: form.address.value,
+    //       city: form.city.value,
+    //       country: form.country.value,
+    //       phone_number: form.phone_number.value
+    //     };
 
-        RestClient.post("order/add", data, function (orderResponse) {
-          toastr.success(orderResponse.message || "Purchase made successfully!");
-          CartService.clearCart();
-        }, function () {
-          toastr.error("Failed to create order.");
-        });
-      };
-    }
+    //     RestClient.post("order/add", data, function (orderResponse) {
+    //       toastr.success(orderResponse.message || "Purchase made successfully!");
+    //       CartService.clearCart();
+    //     }, function () {
+    //       toastr.error("Failed to create order.");
+    //     });
+    //   };
+    // }
 
     const clearBtn = document.getElementById("clearCartBtn");
     if (clearBtn) {
@@ -95,13 +95,18 @@ var CartService = {
   attachEvents: function () {
     document.querySelectorAll('.quantity-input').forEach(input => {
       input.addEventListener('change', function () {
-        const productId = this.getAttribute('data-product-id');
-        const newQuantity = parseInt(this.value);
+        let newQuantity = parseInt(this.value);
         if (isNaN(newQuantity) || newQuantity < 1) {
           this.value = 1;
-          toastr.warning("Minimum quantity is 1.");
+          toastr.warning("Quantity must be a positive number.");
+          newQuantity = 1;
         }
-        CartService.updateQuantity(productId, this.value);
+        this.value = Math.floor(newQuantity); // Remove decimals if any
+        CartService.updateQuantity(this.getAttribute('data-product-id'), this.value);
+      });
+      input.addEventListener('input', function () {
+        // Prevent non-numeric input
+        this.value = this.value.replace(/[^0-9]/g, '');
       });
     });
 
@@ -155,6 +160,43 @@ var CartService = {
       toastr.error("Failed to clear cart.");
     });
   },
+
+  initPurchaseFormValidation: function () {
+    FormValidation.validate(
+      "#purchase_form",
+      {
+        name: "required",
+        surname: "required",
+        address: "required",
+        city: "required",
+        country: "required",
+        phone_number: {
+          required: true,
+          minlength: 6
+        }
+      },
+      {
+        name: "Please enter your name.",
+        surname: "Please enter your surname.",
+        address: "Please enter your address.",
+        city: "Please enter your city.",
+        country: "Please enter your country.",
+        phone_number: {
+          required: "Please enter your phone number.",
+          minlength: "Phone number must be at least 6 digits."
+        }
+      },
+      function (data) {
+        // This is called only if the form is valid!
+        RestClient.post("order/add", data, function (orderResponse) {
+          toastr.success(orderResponse.message || "Purchase made successfully!");
+          CartService.clearCart();
+        }, function () {
+          toastr.error("Failed to create order.");
+        });
+      }
+    );
+  }
 };
 
 const clearBtn = document.getElementById("clearCartBtn");

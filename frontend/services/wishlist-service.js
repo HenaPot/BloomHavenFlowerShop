@@ -97,10 +97,18 @@ var WishlistService = {
   attachQuantityEvents: function () {
     document.querySelectorAll('.quantity-input').forEach(input => {
       input.addEventListener('change', function () {
-        if (parseInt(this.value) < 1) this.value = 1;
+        let newQuantity = parseInt(this.value);
+        if (isNaN(newQuantity) || newQuantity < 1) {
+          this.value = 1;
+          toastr.warning("Quantity must be a positive number.");
+          newQuantity = 1;
+        }
+        this.value = Math.floor(newQuantity);
         const productId = this.getAttribute('data-product-id');
-        const newQuantity = parseInt(this.value) || 1;
-        WishlistService.updateQuantity(productId, newQuantity);
+        WishlistService.updateQuantity(productId, this.value);
+      });
+      input.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '');
       });
     });
   },

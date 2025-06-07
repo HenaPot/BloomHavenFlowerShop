@@ -150,13 +150,3 @@ $(document).ready(function () {
   UserService.getUserData();
 });
 </script>
-
-<script>
-  $(document).ready(function () {
-  $("#edit_profile_form").on("submit", function (e) {
-    e.preventDefault(); // Prevent actual form submission
-    UserService.editProfile();
-  });
-});
-</script>
-
