@@ -58,7 +58,6 @@ var CartService = {
 
     CartService.attachEvents();
 
-    // Attach checkout button handler (SPA-safe)
     const checkoutBtn = document.getElementById("checkoutBtn");
     if (checkoutBtn) {
       checkoutBtn.onclick = function () {
@@ -83,7 +82,6 @@ var CartService = {
       };
     }
 
-    // Attach clear cart button handler
     const clearBtn = document.getElementById("clearCartBtn");
     if (clearBtn) {
       clearBtn.onclick = function () {
