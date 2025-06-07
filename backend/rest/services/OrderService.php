@@ -87,4 +87,9 @@ class OrderService {
     public function get_all_orders() {
         return $this->orderDao->get_all_orders();
     }
+
+    public function get_status_by_id($status_id) {
+        return $this->orderStatusDao->get_status_by_id($status_id);
+    }
+
 }

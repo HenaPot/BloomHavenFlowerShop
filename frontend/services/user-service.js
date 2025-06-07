@@ -192,11 +192,8 @@ var UserService = {
       // Update Profile Picture (Use default if null)
       let profileImg = document.querySelector("#profile img");
       profileImg.src = response.image
-        ? response.image
-        : "frontend/assets/images/ava3.webp";
-      profileImg.src = response.image
         ? "http://localhost/WebProjekat/backend" + response.image
-        : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
+        : "frontend/assets/images/kvalitetno_cvijece.webp";
 
       // Update Profile Information in the card
       document.querySelector("#profile h5").textContent =

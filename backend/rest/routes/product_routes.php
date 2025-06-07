@@ -77,6 +77,11 @@
             Flight::halt(400, "'price_each' must be a positive number.");
         }
 
+        $category = Flight::get('category_service')->get_category_by_id($data['category_id']);
+        if (!$category) {
+            Flight::halt(400, "Category with ID {$data['category_id']} does not exist.");
+        }
+
         $product = [
             'name' => trim($data['name']),
             'category_id' => intval($data['category_id']),
@@ -303,6 +308,16 @@
 
         if (!is_numeric($id) || intval($id) <= 0) {
             Flight::halt(400, "Invalid product ID.");
+        }
+
+        $existing_product = Flight::get('product_service')->get_product_by_id($id);
+        if (!$existing_product) {
+            Flight::halt(404, "Product not found.");
+        }
+
+        $category = Flight::get('category_service')->get_category_by_id($data['category_id']);
+        if (!$category) {
+            Flight::halt(400, "Category with ID {$data['category_id']} does not exist.");
         }
 
         $required_fields = ['name', 'category_id', 'quantity', 'price_each', 'description'];

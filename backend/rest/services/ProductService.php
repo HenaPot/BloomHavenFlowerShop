@@ -57,4 +57,8 @@ class ProductService {
     public function delete_product_image($image_id) {
         return $this->productDao->delete_product_image($image_id);
     }
+
+    public function product_exists($product_id) {
+        return $this->productDao->get_product_by_id($product_id) !== null;
+    }
 }

@@ -162,6 +162,12 @@ var CartService = {
   },
 
   initPurchaseFormValidation: function () {
+    if (typeof $.validator !== "undefined" && !$.validator.methods.phonePlusDigits) {
+      $.validator.addMethod("phonePlusDigits", function(value, element) {
+        return this.optional(element) || /^\+\d+$/.test(value);
+      }, "Phone number must start with '+' and contain only digits after it.");
+    }
+
     FormValidation.validate(
       "#purchase_form",
       {
@@ -172,7 +178,8 @@ var CartService = {
         country: "required",
         phone_number: {
           required: true,
-          minlength: 6
+          minlength: 6,
+          phonePlusDigits: true
         }
       },
       {
@@ -183,7 +190,8 @@ var CartService = {
         country: "Please enter your country.",
         phone_number: {
           required: "Please enter your phone number.",
-          minlength: "Phone number must be at least 6 digits."
+          minlength: "Phone number must be at least 6 digits.",
+          phonePlusDigits: "Phone number must start with '+' and contain only digits after it."
         }
       },
       function (data) {

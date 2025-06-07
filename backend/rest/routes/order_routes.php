@@ -303,6 +303,11 @@ Flight::group('/order', function () {
             Flight::halt(400, "'new_status_id' must be a valid positive number.");
         }
 
+        $status = Flight::get('order_service')->get_status_by_id($data["new_status_id"]);
+        if (!$status) {
+            Flight::halt(404, "Status with ID {$data['new_status_id']} does not exist.");
+        }
+
         $result = Flight::get('order_service')->update_order_status(
             intval($data["order_id"]),
             intval($data["new_status_id"])
