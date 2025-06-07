@@ -74,6 +74,24 @@ var WishlistService = {
       };
     }
     WishlistService.loadSummary();
+
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+      button.addEventListener('click', function () {
+        const productId = this.getAttribute('data-product-id');
+        const item = WishlistService.data.find(i => i.product_id == productId);
+        const quantity = item && item.cart_quantity ? item.cart_quantity : 1;
+
+        RestClient.post("cart/add", {
+          product_id: productId,
+          quantity: quantity
+        }, function () {
+          toastr.success("Added to cart!");
+          WishlistService.removeItemFromWishlist(productId);
+        }, function () {
+          toastr.error("Failed to add to cart.");
+        });
+      });
+    });
   },
 
   attachQuantityEvents: function () {

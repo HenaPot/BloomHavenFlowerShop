@@ -378,6 +378,7 @@ openDeleteConfirmationDialog: function (productStr) {
       document.getElementById('flower-category').textContent = product.category;
       document.getElementById('flower-price').textContent = "$" + product.price_each;
       document.getElementById('flower-description').textContent = product.description;
+      document.getElementById('flower-quantity-input').value = 1;
 
       // Images
       const mainImage = document.getElementById('flower-main-image');
@@ -416,9 +417,16 @@ openDeleteConfirmationDialog: function (productStr) {
       if (cartBtn) {
         cartBtn.onclick = function () {
           const quantity = parseInt(document.getElementById("flower-quantity-input").value) || 1;
-          // CartService.addToCart(productId, quantity); // Uncomment if you have CartService
-          toastr.success("Added to cart!");
-        };
+          const productId = localStorage.getItem('selected_product_id');
+          RestClient.post("cart/add", {
+            product_id: productId,
+            quantity: quantity
+          }, function () {
+            toastr.success("Added to cart!");
+          }, function () {
+            toastr.error("Failed to add to cart.");
+          });
+        }
       }
     });
   },
