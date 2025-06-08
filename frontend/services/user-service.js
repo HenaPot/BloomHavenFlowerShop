@@ -191,9 +191,11 @@ var UserService = {
     function (response) {
       // Update Profile Picture (Use default if null)
       let profileImg = document.querySelector("#profile img");
-      profileImg.src = response.image
-        ? Constants.get_api_base_url() + response.image
-        : "assets/images/kvalitetno_cvijece.webp";
+      let rawImageUrl = response.image;
+      if (rawImageUrl && rawImageUrl.startsWith("https//")) {
+        rawImageUrl = rawImageUrl.replace("https//", "https://");
+      }
+      profileImg.src = rawImageUrl || "assets/images/kvalitetno_cvijece.webp";
 
       // Update Profile Information in the card
       document.querySelector("#profile h5").textContent =
