@@ -64,47 +64,6 @@ function displaySelectedImage(event, elementId) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const saveButton = document.querySelector(
-    "#edit_profile_form button.btn-success"
-  );
-  if (saveButton) {
-    saveButton.addEventListener("click", function () {
-      const formData = new FormData();
-      const imageInput = document.querySelector("#profile_picture");
-
-      if (imageInput.files.length > 0) {
-        formData.append("profile_picture", imageInput.files[0]);
-
-        fetch("http://localhost/web_project/backend/rest/users/upload_image", {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-          body: formData,
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.status === "success") {
-              // Update user image visually
-              document.querySelector("#profile img").src = data.image_url;
-              toastr.success("Profile picture updated!");
-              display_user_profile(); // Refresh user info
-            } else {
-              toastr.error("Image upload failed.");
-            }
-          })
-          .catch((err) => {
-            console.error("Upload error:", err);
-            toastr.error("Something went wrong while uploading image.");
-          });
-      } else {
-        toastr.warning("Please choose an image file first.");
-      }
-    });
-  }
-});
-
 $(document).on('change', '.order-status-dropdown', function () {
   const orderId = $(this).data('order-id');
   const newStatusId = $(this).val();

@@ -192,7 +192,7 @@ var UserService = {
       // Update Profile Picture (Use default if null)
       let profileImg = document.querySelector("#profile img");
       profileImg.src = response.image
-        ? "http://localhost/WebProjekat/backend" + response.image
+        ? Constants.get_api_base_url() + response.image
         : "assets/images/kvalitetno_cvijece.webp";
 
       // Update Profile Information in the card

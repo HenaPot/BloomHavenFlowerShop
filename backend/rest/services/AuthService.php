@@ -1,7 +1,7 @@
 
 <?php
 
-require_once "C:/xampp/htdocs/WebProjekat/backend/rest/dao/AuthDao.php";
+require_once __DIR__ . "/../dao/AuthDao.php";
 
 class AuthService {
     private $auth_dao;
