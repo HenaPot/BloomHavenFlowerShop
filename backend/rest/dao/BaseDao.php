@@ -9,21 +9,32 @@ require_once dirname(__FILE__) . "/../../config.php";
 class BaseDao
 {
     protected $connection;
-
     private $table;
+    private static $shared_connection = null;
 
     public function __construct($table)
     {
         $this->table = $table;
-        try {
-            $this->connection = new PDO("mysql:host=" . Config::DB_HOST() . ";dbname=" . Config::DB_NAME() . ";charset=utf8;port=" . Config::DB_PORT(), Config::DB_USER(),  Config::DB_PASSWORD(), [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            ]);
-        } catch (PDOException $e) {
-            print_r($e);
-            throw $e;
+        if (self::$shared_connection === null) {
+            try {
+                self::$shared_connection = new PDO(
+                    "mysql:host=" . Config::DB_HOST() . ";dbname=" . Config::DB_NAME() . ";charset=utf8;port=" . Config::DB_PORT(),
+                    Config::DB_USER(),
+                    Config::DB_PASSWORD(),
+                    [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    ]
+                );
+            } catch (PDOException $e) {
+                error_log("PDO connection failed: " . $e->getMessage());
+                http_response_code(500);
+                echo json_encode(["error" => "Database connection error."]);
+                exit();
+            }
         }
+
+        $this->connection = self::$shared_connection;
     }
 
     protected function query($query, $params) {
