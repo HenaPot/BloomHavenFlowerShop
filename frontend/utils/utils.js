@@ -2,7 +2,7 @@ const Utils = {
     init_spapp: function () {
         var app = $.spapp({
             defaultView: "#landing",
-            templateDir: "frontend/views/"
+            templateDir: "views/"
         });
 
         app.route({

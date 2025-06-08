@@ -193,7 +193,7 @@ var UserService = {
       let profileImg = document.querySelector("#profile img");
       profileImg.src = response.image
         ? "http://localhost/WebProjekat/backend" + response.image
-        : "frontend/assets/images/kvalitetno_cvijece.webp";
+        : "assets/images/kvalitetno_cvijece.webp";
 
       // Update Profile Information in the card
       document.querySelector("#profile h5").textContent =

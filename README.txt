@@ -30,7 +30,7 @@ Bloomhaven/
 │   │   └── config/
 │   │       └── database.php             # PDO database connection
 │   ├── index.php                   # FlightPHP engine setup
-├── frontend/
+├── 
 │   ├── index.html                   # Main page
 │   ├── assets/
 │   │   ├── css/
@@ -97,7 +97,7 @@ Run Apache and MySQL from XAMPP Control Panel
 
 Visit the Website
 
-Open your browser and go to: http://localhost/Bloomhaven/frontend/index.html
+Open your browser and go to: http://localhost/Bloomhaven/index.html
 
 Password Handling:
 
