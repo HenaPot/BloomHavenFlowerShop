@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../data/Roles.php';
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Aws\S3\S3Client;
 
 Flight::set('user_service', new UserService());
 
@@ -181,21 +182,40 @@ Flight::group('/users', function() {
             Flight::halt(400, 'Only JPG, PNG, or WEBP images are allowed.');
         }
 
-        $uploads_dir = __DIR__ . '/../../uploads/';
+        $bucket = 'bloomhaven-image-uploads';
+        $region = 'fra1';
+        $endpoint = "https://fra1.digitaloceanspaces.com"; // ✅ FIXED
+
+        $s3 = new S3Client([
+            'version' => 'latest',
+            'region'  => $region,
+            'endpoint' => $endpoint,
+            'credentials' => [
+                'key'    => 'DO801AGYNMNQBA8G7T39',
+                'secret' => '8Gg03lwjFiAkVlrEskfxItqgE9ktt67x+bZgAvsupLY',
+            ],
+        ]);
+
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $new_name = uniqid("profile_", true) . '.' . $ext;
-        $target_path = $uploads_dir . $new_name;
+        $key = "uploads/{$new_name}";
+        $url = "https://{$bucket}.{$region}.digitaloceanspaces.com/{$key}";
 
-        if (!move_uploaded_file($file['tmp_name'], $target_path)) {
-            Flight::halt(500, 'Failed to move uploaded file.');
+        try {
+            $s3->putObject([
+                'Bucket' => $bucket,
+                'Key'    => $key,
+                'Body'   => fopen($file['tmp_name'], 'rb'),
+                'ACL'    => 'public-read',
+                'ContentType' => $file['type'],
+            ]);
+
+            Flight::get('user_service')->update_user($user_id, ['image' => $url]);
+            echo json_encode(['status' => 'success', 'image_url' => $url]);
+
+        } catch (Exception $e) {
+            Flight::halt(500, 'Upload to cloud failed: ' . $e->getMessage());
         }
-
-        // Save relative image path to DB
-        $relative_url = '/uploads/' . $new_name;
-        Flight::get('user_service')->update_user($user_id, ['image' => $relative_url]);
-
-        echo json_encode(['status' => 'success', 'image_url' => $relative_url]);
-        
     });
 
 });
