@@ -619,5 +619,12 @@ openDeleteConfirmationDialog: function (productStr) {
     }, function () {
       console.warn("Failed to load delivered orders");
     });
+  },
+
+  // Call this to force re-rendering flower details
+  forceRenderFlower: function() {
+    if (window.location.hash === "#flower") {
+      ProductService.renderProductDetails();
+    }
   }
 };

@@ -20,7 +20,11 @@ const Utils = {
           onReady: function () {
             ProductService.handleNavbarSearch();
             ProductService.renderProductDetails();
-            UserService.updateDashboardLink();
+
+            // Listen for product id changes from footer links
+            window.addEventListener("flowerProductChange", function() {
+              ProductService.renderProductDetails();
+            });
           }
         });
 
