@@ -15,9 +15,9 @@ class AuthMiddleware {
         return TRUE;
     }
 
-    public function authorizeRole($requiredRole) {
+    public function authorizeRole($requiredRole) {        
         $user = Flight::get('user');
-        if ($user->role_id !== $requiredRole) {
+        if ($user->role_id != $requiredRole) {
             Flight::halt(403, 'Access denied: insufficient privileges');
         }
     }
