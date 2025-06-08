@@ -22,8 +22,8 @@ var CartService = {
 
     items.forEach(item => {
       const imageUrl = (item.images && item.images.length > 0)
-        ? 'backend/' + item.images[0].image
-        : 'frontend/assets/images/kvalitetno_cvijece.webp';
+        ? '../backend' + item.images[0].image
+        : 'assets/images/kvalitetno_cvijece.webp';
 
       const html = `
         <div class="card mb-3 border-success bg-white">
