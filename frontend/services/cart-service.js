@@ -21,9 +21,15 @@ var CartService = {
     }
 
     items.forEach(item => {
-      const imageUrl = (item.images && item.images.length > 0)
-        ? Constants.get_api_base_url() + item.images[0].image
-        : 'assets/images/kvalitetno_cvijece.webp';
+      let rawImageUrl = (item.images && item.images.length > 0)
+        ? item.images[0].image
+        : null;
+
+      if (rawImageUrl && rawImageUrl.startsWith("https//")) {
+        rawImageUrl = rawImageUrl.replace("https//", "https://");
+      }
+
+      const imageUrl = rawImageUrl || 'assets/images/kvalitetno_cvijece.webp';
 
       const html = `
         <div class="card mb-3 border-success bg-white">
