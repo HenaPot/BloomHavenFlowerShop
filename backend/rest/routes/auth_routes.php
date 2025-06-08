@@ -3,6 +3,11 @@
     require_once __DIR__ . '/../services/AuthService.php';
     require_once __DIR__ . '/../../utils/ResponseHelper.php';
 
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET,PUT,POST,DELETE,PATCH,OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authentication");
+    header("Access-Control-Allow-Credentials", "true");
+
 
     use Firebase\JWT\JWT;
     use Firebase\JWT\Key;
