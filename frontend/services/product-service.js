@@ -182,7 +182,7 @@ var ProductService = {
           imageWrapper.classList.add("position-relative");
 
           const imageElement = document.createElement("img");
-          imageElement.src = '../backend' + img.image;
+          imageElement.src = Constants.get_api_base_url() + img.image;
           imageElement.classList.add("img-thumbnail");
           imageElement.style.height = "100px";
 
@@ -355,7 +355,7 @@ openDeleteConfirmationDialog: function (productStr) {
 
         products.forEach(product => {
           const imageUrl = (product.images && product.images.length > 0)
-            ? '../backend' + product.images[0].image
+            ? Constants.get_api_base_url() + product.images[0].image
             : 'assets/images/kvalitetno_cvijece.webp';
 
           // Render card with a data attribute for the product ID
@@ -425,10 +425,10 @@ openDeleteConfirmationDialog: function (productStr) {
       thumbnails.innerHTML = "";
 
       if (product.images && product.images.length > 0) {
-        mainImage.src = '../backend' + product.images[0].image;
+        mainImage.src = Constants.get_api_base_url() + product.images[0].image;
         product.images.forEach((img, idx) => {
           const thumb = document.createElement('img');
-          thumb.src = '../backend' + img.image;
+          thumb.src = Constants.get_api_base_url() + img.image;
           thumb.className = "img-thumbnail";
           thumb.style.height = "70px";
           thumb.style.width = "70px";
