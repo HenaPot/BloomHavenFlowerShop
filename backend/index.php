@@ -6,7 +6,19 @@ require 'middleware/AuthMiddleware.php';
 Flight::register('auth_middleware', "AuthMiddleware");
 
 Flight::route('/*', function() {
-    if(
+    // CORS headers
+    header('Access-Control-Allow-Origin: https://bloomhaven-frontend-app-smnzi.ondigitalocean.app');
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Access-Control-Allow-Credentials: true');
+
+    // Handle preflight requests (OPTIONS)
+    if (Flight::request()->method == 'OPTIONS') {
+        Flight::halt(200);
+    }
+
+    // Skip auth for login/register routes
+    if (
         strpos(Flight::request()->url, '/auth/login') === 0 ||
         strpos(Flight::request()->url, '/auth/register') === 0
     ) {
@@ -14,14 +26,14 @@ Flight::route('/*', function() {
     } else {
         try {
             $token = Flight::request()->getHeader("Authentication");
-            if(Flight::auth_middleware()->verifyToken($token))
+            if (Flight::auth_middleware()->verifyToken($token))
                 return TRUE;
         } catch (\Exception $e) {
             Flight::halt(401, $e->getMessage());
         }
     }
- });
- 
+});
+
 require 'rest/routes/user_routes.php';
 require 'rest/routes/shopping_cart_routes.php';
 require 'rest/routes/auth_routes.php';
