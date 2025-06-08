@@ -182,7 +182,13 @@ var ProductService = {
           imageWrapper.classList.add("position-relative");
 
           const imageElement = document.createElement("img");
-          imageElement.src = Constants.get_api_base_url() + img.image;
+          
+          let rawImageUrl = img.image || null;
+          if (rawImageUrl.startsWith("https//")) {
+            rawImageUrl = rawImageUrl.replace("https//", "https://");
+          }
+          imageElement.src = rawImageUrl || 'assets/images/kvalitetno_cvijece.webp';
+
           imageElement.classList.add("img-thumbnail");
           imageElement.style.height = "100px";
 
@@ -354,11 +360,14 @@ openDeleteConfirmationDialog: function (productStr) {
         }
 
         products.forEach(product => {
-          const imageUrl = (product.images && product.images.length > 0)
-            ? Constants.get_api_base_url() + product.images[0].image
-            : 'assets/images/kvalitetno_cvijece.webp';
-
-          // Render card with a data attribute for the product ID
+          let rawImageUrl = (product.images && product.images.length > 0)
+          ? product.images[0].image
+          : null;
+          if (rawImageUrl && rawImageUrl.startsWith("https//")) {
+            rawImageUrl = rawImageUrl.replace("https//", "https://");
+          }
+          const imageUrl = rawImageUrl || 'assets/images/kvalitetno_cvijece.webp';
+          
           container.innerHTML += `
             <div class="col-lg-4 col-md-6 mb-4">
               <div class="card h-100 product-card" data-product-id="${product.id}" style="cursor:pointer;">
@@ -424,24 +433,31 @@ openDeleteConfirmationDialog: function (productStr) {
       const thumbnails = document.getElementById('flower-thumbnails');
       thumbnails.innerHTML = "";
 
-      if (product.images && product.images.length > 0) {
-        mainImage.src = Constants.get_api_base_url() + product.images[0].image;
-        product.images.forEach((img, idx) => {
-          const thumb = document.createElement('img');
-          thumb.src = Constants.get_api_base_url() + img.image;
-          thumb.className = "img-thumbnail";
-          thumb.style.height = "70px";
-          thumb.style.width = "70px";
-          thumb.style.objectFit = "cover";
-          thumb.style.cursor = "pointer";
-          thumb.onclick = function() {
-            mainImage.src = thumb.src;
-          };
-          thumbnails.appendChild(thumb);
-        });
-      } else {
-        mainImage.src = 'assets/images/kvalitetno_cvijece.webp';
+      // Main image
+      let mainRawImageUrl = product.images[0].image || null;
+      if (mainRawImageUrl.startsWith("https//")) {
+        mainRawImageUrl = mainRawImageUrl.replace("https//", "https://");
       }
+      mainImage.src = mainRawImageUrl || 'assets/images/kvalitetno_cvijece.webp';
+
+      // Thumbnails
+      product.images.forEach((img, idx) => {
+        const thumb = document.createElement('img');
+        let rawImageUrl = img.image || null;
+        if (rawImageUrl.startsWith("https//")) {
+          rawImageUrl = rawImageUrl.replace("https//", "https://");
+        }
+        thumb.src = rawImageUrl || 'assets/images/kvalitetno_cvijece.webp';
+        thumb.className = "img-thumbnail";
+        thumb.style.height = "70px";
+        thumb.style.width = "70px";
+        thumb.style.objectFit = "cover";
+        thumb.style.cursor = "pointer";
+        thumb.onclick = function() {
+          mainImage.src = thumb.src;
+        };
+        thumbnails.appendChild(thumb);
+      });
 
       // Attach event listeners for Add to Wishlist and Add to Cart
       const wishlistBtn = document.getElementById("addToWishlistBtn");

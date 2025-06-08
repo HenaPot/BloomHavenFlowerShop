@@ -4,6 +4,7 @@
  
  use Firebase\JWT\JWT;
  use Firebase\JWT\Key;
+ use Aws\S3\S3Client;
  
  Flight::set('product_service', new ProductService());
  
@@ -404,65 +405,99 @@
      * )
      */
     Flight::route('POST /upload_image/@product_id', function($product_id) {
-        Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+        Flight::auth_middleware()->authorizeRoles([Roles::ADMIN]);
+        
         if (!isset($_FILES['product_image'])) {
             Flight::halt(400, 'No file uploaded.');
         }
 
         $file = $_FILES['product_image'];
         $allowed = ['image/jpeg', 'image/png', 'image/webp'];
-
         if (!in_array($file['type'], $allowed)) {
             Flight::halt(400, 'Only JPG, PNG, or WEBP images are allowed.');
         }
 
-        $uploads_dir = __DIR__ . '/../../uploads/';
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $new_name = uniqid("product_", true) . '.' . $ext;
-        $target_path = $uploads_dir . $new_name;
+        // S3 konfiguracija
+        $bucket = 'bloomhaven-image-uploads';
+        $region = 'fra1';
+        $endpoint = "https://fra1.digitaloceanspaces.com"; // ✅ FIXED
 
-        if (!move_uploaded_file($file['tmp_name'], $target_path)) {
-            Flight::halt(500, 'Failed to move uploaded file.');
-        }
-
-        // Save image path to product_image table
-        $relative_url = '/uploads/' . $new_name;
-        $product_service = Flight::get('product_service');
-        $result = $product_service->add_product_image([
-            'product_id' => $product_id,
-            'image' => $relative_url
+        $s3 = new S3Client([
+            'version' => 'latest',
+            'region'  => $region,
+            'endpoint' => $endpoint,
+            'credentials' => [
+                'key'    => 'DO801AGYNMNQBA8G7T39',
+                'secret' => '8Gg03lwjFiAkVlrEskfxItqgE9ktt67x+bZgAvsupLY',
+            ],
         ]);
 
-        ResponseHelper::handleServiceResponse($result, 'Product image uploaded successfully.');
+        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $new_name = uniqid("product_", true) . '.' . $ext;
+        $key = "uploads/{$new_name}";
+        $url = "https://{$bucket}.{$region}.digitaloceanspaces.com/{$key}";
+
+        try {
+            $s3->putObject([
+                'Bucket' => $bucket,
+                'Key'    => $key,
+                'Body'   => fopen($file['tmp_name'], 'rb'),
+                'ACL'    => 'public-read',
+                'ContentType' => $file['type'],
+            ]);
+
+            $product_service = Flight::get('product_service');
+            $result = $product_service->add_product_image([
+                'product_id' => $product_id,
+                'image' => $url
+            ]);
+
+            ResponseHelper::handleServiceResponse($result, 'Product image uploaded successfully.');
+        } catch (Exception $e) {
+            Flight::halt(500, 'Upload to cloud failed: ' . $e->getMessage());
+        }
     });
 
+
     Flight::route('POST /product_images/@product_id', function($product_id) {
-        Flight::auth_middleware()->authorizeRole(Roles::ADMIN);
+        Flight::auth_middleware()->authorizeRoles([Roles::ADMIN]);
 
         $product_service = Flight::get('product_service');
-
         $existingImageIds = json_decode(Flight::request()->data['existingImageIds'] ?? '[]');
 
         if (!is_array($existingImageIds)) {
             Flight::halt(400, 'Invalid image ID list.');
         }
 
+        // 1. Briši slike koje nisu na listi
         $allImages = $product_service->get_images_by_product_id($product_id);
         foreach ($allImages as $img) {
             if (!in_array($img['id'], $existingImageIds)) {
-                $file_path = __DIR__ . '/../../' . ltrim($img['image'], '/');
-                if (file_exists($file_path)) {
-                    unlink($file_path);
-                }
                 $product_service->delete_product_image($img['id']);
+                // Ne možemo brisati fizičku sliku jer je hostovana na cloudu
             }
         }
 
+        // 2. Upload novih slika ako postoje
         if (isset($_FILES['new_images'])) {
             $newImages = $_FILES['new_images'];
-
             $isSingle = !is_array($newImages['tmp_name']);
             $fileCount = $isSingle ? 1 : count($newImages['tmp_name']);
+
+            // S3 config
+            $bucket = 'cuppatea-uploads';
+            $region = 'fra1';
+            $endpoint = "https://fra1.digitaloceanspaces.com";
+
+            $s3 = new S3Client([
+                'version' => 'latest',
+                'region'  => $region,
+                'endpoint' => $endpoint,
+                'credentials' => [
+                    'key'    => 'DO801T4YF42P8Y7W3686',
+                    'secret' => 'Id3nl07Ji3+Q3XUP10twjq2uZEQICP47/6rE7thIn7A',
+                ],
+            ]);
 
             for ($i = 0; $i < $fileCount; $i++) {
                 $tmpName = $isSingle ? $newImages['tmp_name'] : $newImages['tmp_name'][$i];
@@ -474,14 +509,25 @@
 
                 $ext = pathinfo($fileName, PATHINFO_EXTENSION);
                 $new_name = uniqid("product_", true) . '.' . $ext;
-                $target_path = __DIR__ . '/../../uploads/' . $new_name;
+                $key = "uploads/{$new_name}";
+                $url = "https://{$bucket}.{$region}.digitaloceanspaces.com/{$key}";
 
-                if (move_uploaded_file($tmpName, $target_path)) {
-                    $relative_url = '/uploads/' . $new_name;
+                try {
+                    $s3->putObject([
+                        'Bucket' => $bucket,
+                        'Key'    => $key,
+                        'Body'   => fopen($tmpName, 'rb'),
+                        'ACL'    => 'public-read',
+                        'ContentType' => $fileType,
+                    ]);
+
                     $product_service->add_product_image([
                         'product_id' => $product_id,
-                        'image' => $relative_url
+                        'image' => $url
                     ]);
+                } catch (Exception $e) {
+                    // Samo loguj, nastavi dalje s ostalim slikama
+                    error_log('Upload failed: ' . $e->getMessage());
                 }
             }
         }
