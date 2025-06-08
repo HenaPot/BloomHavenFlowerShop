@@ -5,23 +5,19 @@ require 'middleware/AuthMiddleware.php';
 
 Flight::register('auth_middleware', "AuthMiddleware");
 
-// Apply CORS headers functionally
-function apply_cors_headers() {
-    header('Access-Control-Allow-Origin: https://bloomhaven-frontend-app-smnzi.ondigitalocean.app');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authentication');
-    header('Access-Control-Allow-Credentials: true');
+// Allow CORS
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, Authentication");
+header("Access-Control-Allow-Credentials: true");
+
+// Handle preflight requests
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
 
-// Handle preflight OPTIONS requests globally
-Flight::route('OPTIONS *', function() {
-    apply_cors_headers();
-    Flight::halt(200);
-});
-
 Flight::route('/*', function() {
-    apply_cors_headers();
-
     // Public routes
     if (
         strpos(Flight::request()->url, '/auth/login') === 0 ||
