@@ -1,6 +1,6 @@
 <?php
 
-require_once "C:/xampp/htdocs/WebProjekat/backend/rest/dao/UserDao.php";
+require_once __DIR__ . "/../dao/UserDao.php";
 
 class UserService{
     private $userDao;
