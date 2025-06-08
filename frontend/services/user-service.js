@@ -76,6 +76,31 @@ var UserService = {
       },
       UserService.signup
     );
+
+    FormValidation.validate(
+      "#edit_profile_form",
+      {
+        edit_username: "required",
+        edit_name: "required",
+        edit_email: {
+          required: true,
+          email: true,
+        },
+        edit_date_of_birth: "required",
+        edit_address: "required",
+      },
+      {
+        edit_username: "Please enter your username.",
+        edit_name: "Please enter your full name.",
+        edit_email: {
+          required: "Please enter your email address.",
+          email: "Please enter a valid email address.",
+        },
+        edit_date_of_birth: "Please enter your date of birth.",
+        edit_address: "Please enter your address.",
+      },
+      UserService.editProfile
+    );
   },
 
   login: function (data) {
@@ -167,11 +192,8 @@ var UserService = {
       // Update Profile Picture (Use default if null)
       let profileImg = document.querySelector("#profile img");
       profileImg.src = response.image
-        ? response.image
-        : "frontend/assets/images/ava3.webp";
-      profileImg.src = response.image
         ? "http://localhost/WebProjekat/backend" + response.image
-        : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp";
+        : "frontend/assets/images/kvalitetno_cvijece.webp";
 
       // Update Profile Information in the card
       document.querySelector("#profile h5").textContent =
@@ -217,9 +239,7 @@ var UserService = {
   RestClient.put(
     "users/update",
     data,
-    function (response) {
-      console.log("Profile info updated.");
-      
+    function (response) {      
       const fileInput = document.getElementById("profile_picture");
       const imageFile = fileInput.files[0];
 
@@ -250,5 +270,25 @@ var UserService = {
       const msg = response.message || "Something went wrong while updating your profile.";
       toastr.error(msg);
     });
+  },
+
+  updateDashboardLink: function () {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const dashboardLink = document.querySelector("#nav-dashboard");
+    if (!dashboardLink) return;
+
+    if (user && user.role_id == 1) {
+      dashboardLink.setAttribute("href", "#admin_dashboard");
+      dashboardLink.innerHTML = `
+        <i class="fa-solid fa-screwdriver-wrench fa-lg my-2"></i>
+        <span class="small">Admin Dashboard</span>
+      `;
+    } else {
+      dashboardLink.setAttribute("href", "#dashboard");
+      dashboardLink.innerHTML = `
+        <i class="fa-solid fa-house fa-lg my-2"></i>
+        <span class="small">Dashboard</span>
+      `;
+    }
   },
 };

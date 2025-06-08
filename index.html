@@ -39,6 +39,13 @@
 
     <!-- Toastr -->
     <script src="frontend/assets/js/toastr.min.js"></script>
+    
+    <!-- Services JS -->
+    <script src="frontend/services/product-service.js"></script>
+    <script src="frontend/services/order-service.js"></script>
+    <script src="frontend/services/user-service.js"></script>
+    <script src="frontend/services/wishlist-service.js"></script>
+    <script src="frontend/services/cart-service.js"></script>
 
 </head>
 
@@ -55,8 +62,8 @@
 
       <!-- Search form (Only shown if not on login/signup/landing pages) -->
       <form class="input-group d-none" id="navbarSearchForm" style="width: 400px;">
-          <input type="search" class="form-control form-control-custom" placeholder="Type query" aria-label="Search">
-          <button class="btn btn-outline-dark" type="button" style="padding: .45rem 1.5rem .35rem;">
+          <input type="search" id="navbar-search-input" class="form-control form-control-custom" placeholder="Type query" aria-label="Search">
+          <button id="navbar-search-btn" class="btn btn-outline-dark" type="button" style="padding: .45rem 1.5rem .35rem;">
               Search
           </button>
       </form>
@@ -129,6 +136,7 @@
     <section id="wishlist" data-load="wishlist.html"></section>
     <section id="admin_dashboard" data-load="admin_dashboard.html"></section>
     <section id="unauthorized" data-load="401.html"></section>
+    <section id="forbidden" data-load="403.html"></section>
 
 </main>
 
@@ -166,16 +174,32 @@
               Products
             </h6>
             <p>
-              <a >Roses</a>
+              <a href="#flower" class="text-reset" onclick="localStorage.setItem('selected_product_id', 1);
+                if (window.location.hash === '#flower') {
+                  window.dispatchEvent(new Event('flowerProductChange'));
+                }
+              ">Dreamy Heels</a>
             </p>
             <p>
-              <a >Bouquets</a>
+              <a href="#flower" class="text-reset" onclick="localStorage.setItem('selected_product_id', 2);                 
+              if (window.location.hash === '#flower') {
+                  window.dispatchEvent(new Event('flowerProductChange'));
+                }
+              ">Tulip Bouquets</a>
             </p>
             <p>
-              <a>Tulips</a>
+              <a href="#flower" class="text-reset" onclick="localStorage.setItem('selected_product_id', 4);                 
+              if (window.location.hash === '#flower') {
+                  window.dispatchEvent(new Event('flowerProductChange'));
+                }
+              ">Red Rose</a>
             </p>
             <p>
-              <a >Herbal Infusion</a>
+              <a href="#flower" class="text-reset" onclick="localStorage.setItem('selected_product_id', 25);                 
+              if (window.location.hash === '#flower') {
+                  window.dispatchEvent(new Event('flowerProductChange'));
+                }
+              ">Test Product</a>
             </p>
           </div>
 

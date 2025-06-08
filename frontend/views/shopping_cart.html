@@ -1,235 +1,106 @@
 <section class="h-100 h-custom" style="background-color: #eee;">
-    <div class="container py-5 h-100">
-      <h2 class="fw-bold mb-5">Shopping Cart</h2>
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col">
-          <div class="row mb-4">
-            <!-- Left card -->
-            <div class="col-md-6 mb-3">
-                <div class="card h-100 border-success">
-                    <div class="card-body">
-                        <h5 class="card-title">Total Value</h5>
-                        <h3 class="card-text">$789.95</h3>
-                        <small class="text-muted">5 items in cart</small>
-                    </div>
-                </div>
-            </div>
-        <!-- Quick Actions Card -->
-        <div class="col-md-6 mb-3">
-            <div class="card h-100 border-success">
-                <div class="card-body">
-                    <h5 class="card-title">Quick Actions</h5>
-                    <!-- Flexbox container for buttons -->
-                    <div class="d-flex gap-2 mt-3">
-                        <button class="btn btn-sm btn-success flex-grow-1">
-                            Add All to Wishlist
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger flex-grow-1">
-                            Clear Cart
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Filter and Sort -->
+  <div class="container py-5 h-100">
+    <h2 class="fw-bold mb-5">Shopping Cart</h2>
+    <!-- Add cart item count here if you want to show it -->
+    <div class="row d-flex justify-content-center align-items-start h-100">
+      <!-- Left side: Top cards and item cards -->
+      <div class="col-lg-7">
         <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-success">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-md">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search in cart...">
-                                    <button class="btn btn-outline-secondary" type="button">Search</button>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-md-end">
-                                    <select class="form-select w-auto">
-                                        <option selected>Sort by</option>
-                                        <option>Price: Low to High</option>
-                                        <option>Price: High to Low</option>
-                                        <option>Name: A to Z</option>
-                                        <option>Date Added</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <!-- Total Value Card -->
+          <div class="col-md-6 mb-3">
+            <div class="card h-100 border-success">
+              <div class="card-body">
+                <h5 class="card-title">Total Value</h5>
+                <h3 class="card-text">
+                  $<span id="cart-total-value">0</span>
+                </h3>
+                <small class="text-muted">
+                  <span id="cart-total-count">0</span> items in cart
+                </small>
+              </div>
             </div>
-        </div>
-          <div class="row">
-            <div class="col-lg-7">
-              <div class="card mb-3 border-success">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                      <div>
-                        <img src="./frontend/assets/images/buket.jpg" class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
-                      </div>
-                      <div class="ms-3">
-                        <h5>Rose Bouquet</h5>
-                        <p class="small mb-0">Romance</p>
-                      </div>
-                    </div>
-                    <div class="d-flex flex-row align-items-center mx-3">
-                      <div>
-                        <input type="number" class="form-control ml-5" value="2" min="1" onchange="updatePrice(this)" style="width: 60px;">
-                      </div>
-                      <div class="mx-3" style="width: 50px;">
-                        <h5 class="mb-0" id="price-1">$900</h5>
-                      </div>
-                      <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card mb-3 border-success">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row d-flex justify-content-around">
-                      <div>
-                        <img
-                          src="./frontend/assets/images/buket.jpg"
-                          class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
-                      </div>
-                      <div class="ms-3">
-                        <h5>Rose Bouquet</h5>
-                        <p class="small mb-0">Romance</p>
-                      </div>
-                    </div>
-                    <div class="d-flex flex-row align-items-center mx-3">
-                      <div>
-                        <input type="number" class="form-control ml-5" value="2" min="1" onchange="updatePrice(this)" style="width: 60px;">
-                      </div>
-                      <div class="mx-3" style="width: 50px;">
-                        <h5 class="mb-0" id="price-2">$900</h5>
-                      </div>
-                      <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card mb-3 border-success">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                      <div>
-                        <img
-                          src="./frontend/assets/images/buket.jpg"
-                          class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
-                      </div>
-                      <div class="ms-3">
-                        <h5>Rose Bouquet</h5>
-                        <p class="small mb-0">Romance</p>
-                      </div>
-                    </div>
-                    <div class="d-flex flex-row align-items-center mx-3">
-                      <div>
-                        <input type="number" class="form-control ml-5" value="2" min="1" onchange="updatePrice(this)" style="width: 60px;">
-                      </div>
-                      <div class="mx-3" style="width: 50px;">
-                        <h5 class="mb-0" id="price-3">$900</h5>
-                      </div>
-                      <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="card mb-3 border-success">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                      <div>
-                        <img
-                          src="./frontend/assets/images/buket.jpg"
-                          class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
-                      </div>
-                      <div class="ms-3">
-                        <h5>Rose Bouquet</h5>
-                        <p class="small mb-0">Romance</p>
-                      </div>
-                    </div>
-                    <div class="d-flex flex-row align-items-center mx-3">
-                      <div>
-                        <input type="number" class="form-control ml-5" value="2" min="1" style="width: 60px;">
-                      </div>
-                      <div class="mx-3" style="width: 50px;">
-                        <h5 class="mb-0" id="price-4">$900</h5>
-                      </div>
-                      <a href="#!" style="color: #cecece;"><i class="fas fa-trash-alt"></i></a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-            <div class="col-lg-5">
-              <div class="card bg-success text-white rounded-3">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="mb-0">Purchase details</h5>
-                    <i class="fa-solid fa-credit-card"></i>
-                  </div>
-              <form id="purchase_form">
-                <div class="row">
-                  <!-- Name input -->
-                  <div class="mb-3 col-6">
-                    <label class="form-label" for="name">Name</label>
-                    <input name="name" type="text" class="form-control form-control-md" id="name" value="Hena" required />
-                  </div>
-            
-                  <!-- Surname input -->
-                  <div class="mb-3 col-6">
-                    <label class="form-label" for="surname">Surname</label>
-                    <input name="surname" type="text" class="form-control form-control-md" id="surname" value="Potogija" required />
-                  </div>
-                </div>
-            
-                <!-- Address input -->
-                <div class="mb-3">
-                  <label class="form-label" for="address">Address</label>
-                  <input name="address" id="address" class="form-control form-control-md" value="Francuske revolucije bb" required />
-                </div>
-
-                <!-- Postal code input -->
-                <div class="mb-3">
-                  <label class="form-label" for="postal_code">Postal Code</label>
-                  <input name="postal_code" id="postal_code" class="form-control form-control-md" value="71500" required />
-                </div>
-            
-                <div class="row">
-                  <!-- City input -->
-                  <div class="mb-3 col-6">
-                    <label class="form-label" for="city">City</label>
-                    <input name="city" id="city" class="form-control form-control-md" value="Sarajevo" required/>
-                  </div>
-            
-                  <!-- Country input -->
-                  <div class="mb-3 col-6">
-                    <label class="form-label" for="country">Country</label>
-                    <input name="country" id="country" class="form-control form-control-md" value="Bosnia and Herzegovina" required />
-                  </div>
-                </div>
-            
-                <!-- Phone Number input -->
-                <div class="mb-3">
-                  <label class="form-label" for="phone_number">Phone Number</label>
-                  <input name="phone_number" type="tel" id="phone_number" class="form-control form-control-md" value="+387 60 323 7378" required />
-                </div>
-              
-                <div class="d-flex justify-content-center mt-4">
-                  <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-dark btn-lg">
-                    <span>Checkout <i class="fas fa-long-arrow-alt-right ms-2"></i></span>
+          </div>
+          <!-- Quick Actions Card -->
+          <div class="col-md-6 mb-3">
+            <div class="card h-100 border-success">
+              <div class="card-body">
+                <h5 class="card-title">Quick Actions</h5>
+                <div class="d-flex gap-2 mt-3">
+                  <button class="btn btn-sm btn-outline-danger flex-grow-1" id="clearCartBtn">
+                    Clear Cart
                   </button>
                 </div>
-            </form>
+              </div>
             </div>
           </div>
-          </div>
         </div>
+        <!-- Cart items will be rendered here -->
+        <div id="cartItems"></div>
+      </div>
+      <!-- Right side: Purchase details (unchanged) -->
+      <div class="col-lg-5">
+        <div class="card bg-success text-white rounded-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="mb-0">Purchase details</h5>
+              <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <form id="purchase_form">
+              <div class="row">
+                <!-- Name input -->
+                <div class="mb-3 col-6">
+                  <label class="form-label" for="name">Name</label>
+                  <input name="name" type="text" class="form-control form-control-md" id="name" value="" required />
+                </div>
+        
+                <!-- Surname input -->
+                <div class="mb-3 col-6">
+                  <label class="form-label" for="surname">Surname</label>
+                  <input name="surname" type="text" class="form-control form-control-md" id="surname" value="" required />
+                </div>
+              </div>
+        
+              <!-- Address input -->
+              <div class="mb-3">
+                <label class="form-label" for="address">Address</label>
+                <input name="address" id="address" class="form-control form-control-md" value="" required />
+              </div>
+
+              <!-- Postal code input -->
+              <div class="mb-3">
+                <label class="form-label" for="postal_code">Postal Code</label>
+                <input name="postal_code" id="postal_code" class="form-control form-control-md" value="" required />
+              </div>
+        
+              <div class="row">
+                <!-- City input -->
+                <div class="mb-3 col-6">
+                  <label class="form-label" for="city">City</label>
+                  <input name="city" id="city" class="form-control form-control-md" value="" required/>
+                </div>
+        
+                <!-- Country input -->
+                <div class="mb-3 col-6">
+                  <label class="form-label" for="country">Country</label>
+                  <input name="country" id="country" class="form-control form-control-md" value="" required />
+                </div>
+              </div>
+        
+              <!-- Phone Number input -->
+              <div class="mb-3">
+                <label class="form-label" for="phone_number">Phone Number</label>
+                <input name="phone_number" type="tel" id="phone_number" class="form-control form-control-md" value="" required />
+              </div>
+            
+              <div class="d-flex justify-content-center mt-4">
+                <button type="submit" id="checkoutBtn" class="btn btn-lg fw-bold" style="background-color: #ffc439; border-color: #ffc439; color: #003087;">
+                  <i class="fab fa-paypal me-2" style="color: #003087;"></i> Pay with PayPal
+                </button>
+              </div>
+          </form>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>

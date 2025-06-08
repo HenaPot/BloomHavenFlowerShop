@@ -24,4 +24,8 @@ class CategoryDao extends BaseDao {
     public function get_category_by_name($name) {
         return $this->query_unique("SELECT * FROM category WHERE name = :name", ["name" => $name]); 
     }
+
+    public function get_category_by_id($id) {
+        return $this->query_unique("SELECT * FROM category WHERE id = :id", ["id" => $id]);
+    }
 }

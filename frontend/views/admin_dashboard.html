@@ -125,7 +125,7 @@
                             </select>
                     </div>
                     <div class="mb-3">
-                        <label for="itemQuantity" class="form-label">Quantity ID</label>
+                        <label for="itemQuantity" class="form-label">Quantity</label>
                         <input type="number" class="form-control" id="itemQuantity" name="quantity" required>
                     </div>
                     <div class="mb-3">
@@ -196,57 +196,4 @@
 <script>
     new DataTable('#ordersTable');
     new DataTable('#itemsTable');
-</script>
-
-<script src="./frontend/services/product-service.js"></script>
-<script src="./frontend/services/order-service.js"></script>
-
-<script>
-  $(document).ready(function () {
-    ProductService.init();
-    ProductService.getAllProducts();
-
-    FormValidation.validate(
-      "#editItemForm",
-      {
-        name: "required",
-        category_id: "required",
-        quantity: {
-          required: true,
-          digits: true,
-          min: 1
-        },
-        price_each: {
-          required: true,
-          number: true,
-          min: 0.01
-        }
-      },
-      {
-        name: "Please enter the product name.",
-        category_id: "Please enter the product category.",
-        quantity: {
-          required: "Please enter the quantity.",
-          digits: "Quantity must be a whole number.",
-          min: "Quantity must be at least 1."
-        },
-        price_each: {
-          required: "Please enter the price.",
-          number: "Price must be a valid number.",
-          min: "Price must be at least 0.01."
-        }
-      }
-    );
-
-    $('#editItemForm').on('submit', function (e) {
-      e.preventDefault();
-      ProductService.updateProduct();
-    });
-  });
-</script>
-
-<script>
-  $(document).ready(function () {
-    OrderService.getAllOrders();
-  });
 </script>

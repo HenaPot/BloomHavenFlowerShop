@@ -1,6 +1,8 @@
 var ProductService = {
   init: function () {
+    ProductService.initProductFormsValidation();
     ProductService.loadCategories();
+    ProductService.handleNavbarSearch();
     
     $('#addItemModal').on('show.bs.modal', function () {
       const form = document.getElementById('addItemForm');
@@ -18,6 +20,10 @@ var ProductService = {
         });
       }
     });
+    ProductService.initProductFormsValidation();
+  },
+
+  initProductFormsValidation: function () {
     FormValidation.validate(
       "#addItemForm",
       {
@@ -49,6 +55,40 @@ var ProductService = {
         }
       },
       ProductService.addProduct
+    );
+
+    // Edit Product Form
+    FormValidation.validate(
+      "#editItemForm",
+      {
+        name: "required",
+        category_id: "required",
+        quantity: {
+          required: true,
+          digits: true,
+          min: 1
+        },
+        price_each: {
+          required: true,
+          number: true,
+          min: 0.01
+        }
+      },
+      {
+        name: "Please enter the product name.",
+        category_id: "Please enter the product category.",
+        quantity: {
+          required: "Please enter the quantity.",
+          digits: "Quantity must be a whole number.",
+          min: "Quantity must be at least 1."
+        },
+        price_each: {
+          required: "Please enter the price.",
+          number: "Price must be a valid number.",
+          min: "Price must be at least 0.01."
+        }
+      },
+      ProductService.updateProduct
     );
   },
 
@@ -314,9 +354,15 @@ openDeleteConfirmationDialog: function (productStr) {
         }
 
         products.forEach(product => {
+          const imageUrl = (product.images && product.images.length > 0)
+            ? 'backend/' + product.images[0].image
+            : 'frontend/assets/images/kvalitetno_cvijece.webp';
+
+          // Render card with a data attribute for the product ID
           container.innerHTML += `
             <div class="col-lg-4 col-md-6 mb-4">
-              <div class="card h-100">
+              <div class="card h-100 product-card" data-product-id="${product.id}" style="cursor:pointer;">
+                <img src="${imageUrl}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Product Image">
                 <div class="card-body">
                   <h5 class="card-title mb-3">${product.name}</h5>
                   <p class="mb-1"><strong>Category:</strong> ${product.category_name}</p>
@@ -328,6 +374,15 @@ openDeleteConfirmationDialog: function (productStr) {
             </div>
           `;
         });
+
+        // Add click listeners to all product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+          card.addEventListener('click', function() {
+            const productId = this.getAttribute('data-product-id');
+            localStorage.setItem('selected_product_id', productId);
+            window.location.hash = "#flower";
+          });
+        });
       },
       function () {
         document.getElementById("products-list").innerHTML =
@@ -335,4 +390,241 @@ openDeleteConfirmationDialog: function (productStr) {
       }
     );
   },
+  renderCategoryCheckboxes: function () {
+    RestClient.get("categories", function (categories) {
+      const container = document.getElementById("category-checkboxes");
+      container.innerHTML = "";
+      categories.forEach(cat => {
+        container.innerHTML += `
+          <div class="form-check category-item">
+            <input class="form-check-input category-checkbox" type="checkbox" id="cat${cat.id}" value="${cat.id}">
+            <label class="form-check-label p-2" for="cat${cat.id}">${cat.name}</label>
+          </div>
+        `;
+      });
+    });
+  },
+
+  renderProductDetails: function() {
+    const productId = localStorage.getItem('selected_product_id');
+    if (!productId) return;
+
+    // Log the view
+    ProductService.logProductView(productId);
+
+    RestClient.get('products/' + productId, function(product) {
+      document.getElementById('flower-name').textContent = product.name;
+      document.getElementById('flower-category').textContent = product.category;
+      document.getElementById('flower-price').textContent = "$" + product.price_each;
+      document.getElementById('flower-description').textContent = product.description;
+      document.getElementById('flower-quantity-input').value = 1;
+
+      // Images
+      const mainImage = document.getElementById('flower-main-image');
+      const thumbnails = document.getElementById('flower-thumbnails');
+      thumbnails.innerHTML = "";
+
+      if (product.images && product.images.length > 0) {
+        mainImage.src = 'backend/' + product.images[0].image;
+        product.images.forEach((img, idx) => {
+          const thumb = document.createElement('img');
+          thumb.src = 'backend/' + img.image;
+          thumb.className = "img-thumbnail";
+          thumb.style.height = "70px";
+          thumb.style.width = "70px";
+          thumb.style.objectFit = "cover";
+          thumb.style.cursor = "pointer";
+          thumb.onclick = function() {
+            mainImage.src = thumb.src;
+          };
+          thumbnails.appendChild(thumb);
+        });
+      } else {
+        mainImage.src = 'frontend/assets/images/kvalitetno_cvijece.webp';
+      }
+
+      // Attach event listeners for Add to Wishlist and Add to Cart
+      const wishlistBtn = document.getElementById("addToWishlistBtn");
+      if (wishlistBtn) {
+        wishlistBtn.onclick = function () {
+          const quantity = parseInt(document.getElementById("flower-quantity-input").value) || 1;
+          WishlistService.addToWishlist(productId, quantity);
+        };
+      }
+
+      const cartBtn = document.getElementById("addToCartBtn");
+      if (cartBtn) {
+        cartBtn.onclick = function () {
+          const quantity = parseInt(document.getElementById("flower-quantity-input").value) || 1;
+          const productId = localStorage.getItem('selected_product_id');
+          RestClient.post("cart/add", {
+            product_id: productId,
+            quantity: quantity
+          }, function () {
+            toastr.success("Added to cart!");
+          }, function () {
+            toastr.error("Failed to add to cart.");
+          });
+        }
+      }
+
+      // Attach quantity input validation
+      const quantityInput = document.getElementById('flower-quantity-input');
+      if (quantityInput) {
+        quantityInput.addEventListener('change', function () {
+          let val = parseInt(this.value);
+          if (isNaN(val) || val < 1) {
+            this.value = 1;
+            toastr.warning("Quantity must be a positive number.");
+          }
+          this.value = Math.floor(this.value);
+        });
+        quantityInput.addEventListener('input', function () {
+          this.value = this.value.replace(/[^0-9]/g, '');
+        });
+      }
+    });
+  },
+  handleNavbarSearch: function () {
+    const searchInput = document.getElementById("navbar-search-input");
+    const searchBtn = document.getElementById("navbar-search-btn");
+    if (!searchInput || !searchBtn) return;
+
+    // Remove previous listeners to avoid duplicates
+    searchBtn.onclick = null;
+    searchInput.onkeydown = null;
+
+    function doSearch() {
+      const searchTerm = searchInput.value.trim();
+
+      // Validation: require at least 2 characters
+      if (searchTerm.length < 2) {
+        toastr.error("Search term must be at least 2 characters.");
+        searchInput.focus();
+        return;
+      }
+
+      if (window.location.hash === "#products") {
+        ProductService.renderCategoryCheckboxes();
+        ProductService.loadProducts({ search: searchTerm });
+      } else {
+        localStorage.setItem("products_search_term", searchTerm);
+        window.location.hash = "#products";
+      }
+    }
+
+    searchBtn.onclick = doSearch;
+    searchInput.onkeydown = function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        doSearch();
+      }
+    };
+  },
+
+  applyStoredSearch: function () {
+    const searchTerm = localStorage.getItem("products_search_term") || "";
+    if (searchTerm) {
+      localStorage.removeItem("products_search_term");
+      ProductService.loadProducts({ search: searchTerm });
+      // Optionally, set the search box value if on products page
+      const searchInput = document.getElementById("navbar-search-input");
+      if (searchInput) searchInput.value = searchTerm;
+    } else {
+      ProductService.loadProducts();
+      // Optionally clear the search box if not searching
+      const searchInput = document.getElementById("navbar-search-input");
+      if (searchInput) searchInput.value = "";
+    }
+  },
+
+  reloadProductsView: function(searchTerm) {
+    ProductService.renderCategoryCheckboxes();
+    ProductService.loadProducts(searchTerm ? { search: searchTerm } : {});
+    const searchInput = document.getElementById("navbar-search-input");
+    if (searchInput) searchInput.value = searchTerm || "";
+  },
+
+  logProductView: function(productId) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.id) {
+      const payload = {
+        customer_id: user.id,
+        product_id: parseInt(productId)
+      };
+      RestClient.post("product_views/add", payload, function () {
+      }, function () {
+        console.warn("⚠ Failed to log product view.");
+      });
+    }
+  },
+
+  loadUserProductViews: function () {
+  RestClient.get("product_views", function (data) {
+    Utils.datatable(
+      "productViewsTable",
+      [
+        { data: 'product_name', title: 'Product' },
+        { data: 'time', title: 'Viewed At' },
+        {
+          title: 'Actions',
+          render: function (data, type, row) {
+            return `
+              <div class="text-center">
+                <a href="#flower" class="btn btn-sm btn-outline-dark"
+                   onclick="localStorage.setItem('selected_product_id', ${row.product_id})">
+                  View Product
+                </a>
+              </div>`;
+          }
+        }
+      ],
+      data,
+      5
+    );
+    }, function (xhr, status, error) {
+      console.error("Error loading product views:", error);
+      toastr.error("Failed to load product views.");
+    });
+  },
+
+  loadDashboardSummary: function () {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user || !user.id) return;
+
+  // Total Orders
+  RestClient.get("order/count_all", function (res) {
+    document.getElementById("total-orders-count").textContent = res || 0;
+  }, function () {
+    console.warn("Failed to load total orders");
+  });
+
+  // Wishlist Items
+  RestClient.get("wishlist/summary", function (res) {
+    document.getElementById("wishlist-count").textContent = res.total_count || 0;
+  }, function () {
+    console.warn("Failed to load wishlist summary");
+  });
+
+  // Pending Orders
+  RestClient.get("order/count_pending", function (res) {
+    document.getElementById("pending-count").textContent = res || 0;
+  }, function () {
+    console.warn("Failed to load pending orders");
+  });
+
+  // Delivered Orders
+  RestClient.get("order/count_delivered", function (res) {
+      document.getElementById("delivered-count").textContent = res || 0;
+    }, function () {
+      console.warn("Failed to load delivered orders");
+    });
+  },
+
+  // Call this to force re-rendering flower details
+  forceRenderFlower: function() {
+    if (window.location.hash === "#flower") {
+      ProductService.renderProductDetails();
+    }
+  }
 };

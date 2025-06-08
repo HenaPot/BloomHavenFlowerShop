@@ -8,18 +8,6 @@
       </div>
   
       <div id="products-list" class="row"></div>
-        
-      <div class="row">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination align-items-center">
-            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-            <li class="page-item"><a class="page-link active" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-          </ul>
-        </nav>
-      </div>
     </div>
 </section>
 
@@ -37,27 +25,8 @@
               <div class="row mb-4">
                 <div class="col-12">
                   <h6 class="mb-3">Select Categories</h6>
-                  <div class="d-flex flex-wrap gap-2">
-                    <div class="form-check category-item">
-                      <input class="form-check-input category-checkbox" type="checkbox" id="cat1">
-                      <label class="form-check-label p-2" for="cat1">Electronics</label>
-                    </div>
-                    <div class="form-check category-item">
-                      <input class="form-check-input category-checkbox" type="checkbox" id="cat2">
-                      <label class="form-check-label p-2" for="cat2">Fashion</label>
-                    </div>
-                    <div class="form-check category-item">
-                      <input class="form-check-input category-checkbox" type="checkbox" id="cat3">
-                      <label class="form-check-label p-2" for="cat3">Home & Living</label>
-                    </div>
-                    <div class="form-check category-item">
-                      <input class="form-check-input category-checkbox" type="checkbox" id="cat4">
-                      <label class="form-check-label p-2" for="cat4">Books</label>
-                    </div>
-                    <div class="form-check category-item">
-                      <input class="form-check-input category-checkbox" type="checkbox" id="cat5">
-                      <label class="form-check-label p-2" for="cat5">Sports</label>
-                    </div>
+                  <div class="d-flex flex-wrap gap-2" id="category-checkboxes">
+                    <!-- Categories will be loaded here dynamically -->
                   </div>
                 </div>
               </div>
@@ -93,26 +62,35 @@
     </div>
 
 <script>
-  document.getElementById("resetBtn").addEventListener("click", function () {
+document.getElementById("resetBtn").addEventListener("click", function () {
   document.querySelectorAll(".category-checkbox").forEach(checkbox => checkbox.checked = false);
   document.getElementById("priceRange").value = "";
   document.getElementById("sortBy").value = "";
+  ProductService.loadProducts();
 });
 
 document.getElementById("applyBtn").addEventListener("click", function () {
-  const selectedCategories = [...document.querySelectorAll(".category-checkbox:checked")].map(cb => cb.nextElementSibling.textContent.trim());
+  const selectedCategoryIds = [...document.querySelectorAll(".category-checkbox:checked")].map(cb => cb.value);
   const selectedPrice = document.getElementById("priceRange").value;
   const selectedSort = document.getElementById("sortBy").value;
 
-  console.log("Selected Categories:", selectedCategories);
-  console.log("Selected Price Range:", selectedPrice);
-  console.log("Selected Sort Option:", selectedSort);
-});
-</script>
+  const filters = {};
 
-<script src="./frontend/services/product-service.js"></script>
-<script>
-  $(document).ready(function () {
-    ProductService.loadProducts();
-  });
+  if (selectedCategoryIds.length) {
+    filters.category_id = selectedCategoryIds.join(",");
+  }
+  if (selectedPrice) {
+    const [min, max] = selectedPrice.split("-");
+    filters.min_price = min;
+    if (max) filters.max_price = max.replace("+", "");
+  }
+  if (selectedSort) {
+    filters.sort = selectedSort === "low-high" ? "price_asc" : "price_desc";
+  }
+
+  ProductService.loadProducts(filters);
+
+  const filterModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('filter_modal'));
+  filterModal.hide();
+});
 </script>

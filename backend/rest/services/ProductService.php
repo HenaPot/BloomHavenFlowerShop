@@ -23,7 +23,13 @@ class ProductService {
     }
 
     public function get_all_products($search = null, $sort = null, $min_price = null, $max_price = null, $category_id = null) {
-        return $this->productDao->get_all_products($search, $sort, $min_price, $max_price, $category_id);
+        $products = $this->productDao->get_all_products($search, $sort, $min_price, $max_price, $category_id);
+
+        foreach ($products as &$product) {
+            $product['images'] = $this->productDao->get_images_by_product_id($product['id']);
+        }
+
+        return $products;
     }
 
     public function update_product($product_id, $product) {
@@ -50,5 +56,9 @@ class ProductService {
 
     public function delete_product_image($image_id) {
         return $this->productDao->delete_product_image($image_id);
+    }
+
+    public function product_exists($product_id) {
+        return $this->productDao->get_product_by_id($product_id) !== null;
     }
 }

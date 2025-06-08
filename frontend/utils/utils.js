@@ -8,7 +8,78 @@ const Utils = {
         app.route({
           view: "profile",
           onReady: function () {
-              UserService.getUserData();
+            ProductService.handleNavbarSearch();
+            UserService.init();
+            UserService.getUserData();
+            UserService.updateDashboardLink();
+          }
+        });
+
+        app.route({
+          view: "flower",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+            ProductService.renderProductDetails();
+
+            // Listen for product id changes from footer links
+            window.addEventListener("flowerProductChange", function() {
+              ProductService.renderProductDetails();
+            });
+          }
+        });
+
+        app.route({
+          view: "admin_dashboard",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+            ProductService.init();
+            ProductService.getAllProducts();
+            OrderService.getAllOrders();
+            UserService.updateDashboardLink();
+          }
+        });
+
+        app.route({
+          view: "dashboard",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+            ProductService.loadUserProductViews(); 
+            ProductService.loadDashboardSummary();
+            OrderService.getUserOrders();
+            UserService.updateDashboardLink();
+          }
+        });
+
+        app.route({
+          view: "products",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+            ProductService.renderCategoryCheckboxes();
+            UserService.updateDashboardLink();
+            const searchInput = document.getElementById("navbar-search-input");
+            const searchTerm = localStorage.getItem("products_search_term") || "";
+            localStorage.removeItem("products_search_term");
+            if (searchInput) searchInput.value = searchTerm;
+            ProductService.loadProducts(searchTerm ? { search: searchTerm } : {});
+          }
+        });
+
+        app.route({
+          view: "shopping_cart",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+            CartService.getCart();
+            UserService.updateDashboardLink();
+            CartService.initPurchaseFormValidation();
+          }
+        });
+
+        app.route({
+          view: "wishlist",
+          onReady: function () {
+            ProductService.handleNavbarSearch();
+            WishlistService.getWishlist();
+            UserService.updateDashboardLink();
           }
         });
 

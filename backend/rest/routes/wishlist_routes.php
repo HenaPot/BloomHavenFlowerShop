@@ -200,7 +200,27 @@ Flight::group('/wishlist', function () {
         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
         $user_id = Flight::get('user')->id;
         $data = Flight::request()->data->getData();
-        $result = Flight::get('wishlist_service')->add_to_wishlist($user_id, $data['product_id']);
+
+        if (!isset($data['product_id'])) {
+            Flight::halt(400, "'product_id' is required.");
+        }
+
+        if (!is_numeric($data['product_id']) || intval($data['product_id']) <= 0) {
+            Flight::halt(400, "'product_id' must be a positive number.");
+        }
+
+        $quantity = $data['quantity'] ?? 1;
+
+        if (!is_numeric($quantity) || intval($quantity) <= 0) {
+            Flight::halt(400, "'quantity' must be a positive number.");
+        }
+
+        $result = Flight::get('wishlist_service')->add_to_wishlist(
+            $user_id,
+            intval($data['product_id']),
+            intval($quantity)
+        );
+
         ResponseHelper::handleServiceResponse($result, 'Item added to wishlist');
     });
 
@@ -290,7 +310,34 @@ Flight::group('/wishlist', function () {
         Flight::auth_middleware()->authorizeRoles([Roles::USER, Roles::ADMIN]);
         $user_id = Flight::get('user')->id;
         $data = Flight::request()->data->getData();
-        $result = Flight::get('wishlist_service')->update_quantity($user_id, $data['product_id'], $data['quantity']);
+
+        if (!isset($data['product_id'])) {
+            Flight::halt(400, "'product_id' is required.");
+        }
+
+        if (!is_numeric($data['product_id']) || intval($data['product_id']) <= 0) {
+            Flight::halt(400, "'product_id' must be a positive number.");
+        }
+
+        if (!isset($data['quantity'])) {
+            Flight::halt(400, "'quantity' is required.");
+        }
+
+        if (!is_numeric($data['quantity']) || intval($data['quantity']) <= 0) {
+            Flight::halt(400, "'quantity' must be a positive number.");
+        }
+
+        $product_id = intval($data['product_id']);
+        if (!Flight::get('product_service')->product_exists($product_id)) {
+            Flight::halt(400, "Product with ID $product_id does not exist.");
+        }
+
+        $result = Flight::get('wishlist_service')->update_quantity(
+            $user_id,
+            intval($data['product_id']),
+            intval($data['quantity'])
+        );
+
         ResponseHelper::handleServiceResponse($result, 'Wishlist updated');
     });
 

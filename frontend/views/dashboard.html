@@ -14,7 +14,7 @@
         <div class="card-body text-center">
             <i class="fas fa-shopping-bag fa-2x text-success mb-3"></i>
             <h5 class="card-title">Total Orders</h5>
-            <h3 class="card-text text-success">12</h3>
+            <h3 class="card-text text-success" id="total-orders-count" >12</h3>
         </div>
         </div>
     </div>
@@ -23,7 +23,7 @@
         <div class="card-body text-center">
             <i class="fas fa-heart fa-2x text-success mb-3"></i>
             <h5 class="card-title">Wishlist Items</h5>
-            <h3 class="card-text text-success">5</h3>
+            <h3 class="card-text text-success" id="wishlist-count" >5</h3>
         </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
         <div class="card-body text-center">
             <i class="fas fa-box fa-2x text-success mb-3"></i>
             <h5 class="card-title">Pending</h5>
-            <h3 class="card-text text-success">2</h3>
+            <h3 class="card-text text-success" id="pending-count">2</h3>
         </div>
         </div>
     </div>
@@ -41,7 +41,7 @@
         <div class="card-body text-center">
             <i class="fas fa-truck fa-2x text-success mb-3"></i>
             <h5 class="card-title">Delivered</h5>
-            <h3 class="card-text text-success">10</h3>
+            <h3 class="card-text text-success" id="delivered-count">10</h3>
         </div>
         </div>
     </div>
@@ -67,36 +67,7 @@
                     <th scope="col">Status</th>
                 </tr>
                 </thead>
-                <tbody id="recentOrdersTable">
-                <!-- Orders will be populated dynamically -->
-                <tr>
-                    <!-- <th scope="row">1</th> -->
-                    <td>12</td>
-                    <td>27.01.2025</td>
-                    <td>Rose</td>
-                    <td>2</td>
-                    <td>$75.34</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <!-- <th scope="row">2</th> -->
-                    <td>13</td>
-                    <td>06.01.2025</td>
-                    <td>Daisy</td>
-                    <td>1</td>
-                    <td>$75.34</td>
-                    <td>Pending</td>
-                </tr>
-                <tr>
-                    <!-- <th scope="row">3</th> -->
-                    <td>45</td>
-                    <td>17.01.2024</td>
-                    <td>Wildflower Bouquet</td>
-                    <td>2</td>
-                    <td>$75.34</td>
-                    <td>Canceled</td>
-                </tr>
-                </tbody>
+                <tbody></tbody>
             </table>
             </div>
         </div>
@@ -132,47 +103,10 @@
             <h5 class="mb-0">Recently Viewed Products</h5>
         </div>
         <div class="card-body">
-            <div class="activity-feed">
-            <div class="activity-item d-flex align-items-center mb-3">
-                <img src="./frontend/assets/images/purple_flowers.jfif" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Purple Flowers">
-                <div>
-                <div class="fw-bold">Purple Passion Bouquet</div>
-                <small class="text-muted">Viewed 2 hours ago</small>
-                </div>
-            </div>
-
-            <div class="activity-item d-flex align-items-center mb-3">
-                <img src="./frontend/assets/images/rose_buket.webp" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Rose Bouquet">
-                <div>
-                <div class="fw-bold">Classic Rose Bouquet</div>
-                <small class="text-muted">Viewed 5 hours ago</small>
-                </div>
-            </div>
-
-            <div class="activity-item d-flex align-items-center mb-3">
-                <img src="./frontend/assets/images/kvalitetno_cvijece.webp" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Premium Flowers">
-                <div>
-                <div class="fw-bold">Premium Spring Mix</div>
-                <small class="text-muted">Viewed yesterday</small>
-                </div>
-            </div>
-
-            <div class="activity-item d-flex align-items-center mb-3">
-                <img src="./frontend/assets/images/cvijece.webp" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Seasonal Flowers">
-                <div>
-                <div class="fw-bold">Seasonal Bouquet</div>
-                <small class="text-muted">Viewed 2 days ago</small>
-                </div>
-            </div>
-
-            <div class="activity-item d-flex align-items-center">
-                <img src="./frontend/assets/images/buket.jpg" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;" alt="Mixed Bouquet">
-                <div>
-                <div class="fw-bold">Mixed Garden Bouquet</div>
-                <small class="text-muted">Viewed 3 days ago</small>
-                </div>
-            </div>
-            </div>
+            <table id="productViewsTable" class="table table-striped table-bordered table-sm" style="width:100%">
+                    <thead></thead>
+                    <tbody></tbody>
+            </table>
         </div>
         </div>
     </div>
@@ -182,4 +116,5 @@
 
 <script>
     new DataTable('#dashboard_table1');
+    new DataTable('#productViewsTable');
 </script>
