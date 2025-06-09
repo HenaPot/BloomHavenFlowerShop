@@ -1,3 +1,7 @@
+DEPLOYED URL: https://bloomhaven-frontend-app-smnzi.ondigitalocean.app/#landing
+
+--------------------------------------------------------------------------------------
+
 Bloomhaven - Web Project:
 
 A full-stack web application for managing user orders and interactions, built with a modern and lightweight tech stack.
@@ -17,30 +21,6 @@ Frontend	HTML, CSS, JavaScript	Interface design, dynamic interactions
 Backend	FlightPHP (Microframework)	Routing, API endpoints, error handling
 Database	MySQL	Persistent storage (users, orders)
 Server Tools	XAMPP (Apache, MySQL, PHP)	Local development environment
-
-Project Structure:
-
-Bloomhaven/
-├── backend/
-│   ├── vendor/                     # FlightPHP and dependencies (Composer)
-│   ├── rest/
-│   │   ├── routes/
-│   │   │   ├── middleware_routes.php    # Middleware (e.g., error handling)
-│   │   │   └── other_route_files.php    # Other API endpoints
-│   │   └── config/
-│   │       └── database.php             # PDO database connection
-│   ├── index.php                   # FlightPHP engine setup
-├── 
-│   ├── index.html                   # Main page
-│   ├── assets/
-│   │   ├── css/
-│   │   │   └── styles.css            # Styling
-│   │   ├── js/
-│   │   │   └── scripts.js            # Frontend JS
-│   │   └── images/
-├── database/
-│   └── bloomhaven.sql               # SQL schema and initial data
-└── README.md                        # Project documentation (this file)
 
 Main Features:
 
